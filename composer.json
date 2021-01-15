@@ -1,0 +1,42 @@
+{
+    "name": "thepublicgood/payfast",
+    "description": "Simple PayFast integration",
+    "keywords": ["payfast", "commerce"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Warrick Bayman",
+            "email": "makers@thepublicgood.dev"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "guzzlehttp/guzzle": "^7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "roave/security-advisories": "dev-master",
+        "spatie/ray": "^1.10",
+        "symfony/var-dumper": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "TPG\\PayFast\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TPG\\PayFast\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
