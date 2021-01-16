@@ -6,11 +6,11 @@ namespace TPG\PayFast;
 
 class PaymentMethod
 {
-    protected const ALL = null;
-    protected const EFT = 'eft';
-    protected const CC = 'cc';
-    protected const DC = 'dc';
-    protected const MP = 'mp';
-    protected const MC = 'mc';
-    protected const SC = 'sc';
+    public const ALL = null;
+    public const EFT = 'eft';
+    public const CC = 'cc';
+    public const DC = 'dc';
+    public const MP = 'mp';
+    public const MC = 'mc';
+    public const SC = 'sc';
 }

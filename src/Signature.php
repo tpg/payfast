@@ -24,11 +24,13 @@ class Signature
     {
         $attributes = $this->transaction->attributes();
 
-        array_walk($attributes, static fn ($value, $key) => $key.'='.$value);
+        array_walk($attributes, static function (&$value, $key) {
+            $value = $key.'='.urlencode(trim($value));
+        });
 
         return implode(
             '&',
-            $attributes
-        ).'&passphrase='.$this->passphrase;
+            array_values($attributes)
+        ).'&passphrase='.urlencode(trim($this->passphrase));
     }
 }

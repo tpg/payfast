@@ -75,7 +75,7 @@ class Transaction
 
     public function attributes(): array
     {
-        $attributes = array_merge(
+        return (new Attributes())->prep(array_merge(
             $this->merchant->attributes(),
             $this->customer ? $this->customer->attributes() : [],
             [
@@ -91,9 +91,7 @@ class Transaction
                 'confirmation_address' => $this->emailConfirmationAddress,
                 'payment_method' => $this->paymentMethod,
             ]
-        );
-
-        return array_filter($attributes, static fn ($value) => ! empty($value));
+        ));
     }
 
     protected function getDecimalAmount(): string

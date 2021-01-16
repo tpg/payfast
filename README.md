@@ -9,9 +9,15 @@ Install the PayFast library through composer by adding it to your `composer.json
 ```json
 {
     "require": {
-        "thepublicgood/payfast": "dev-master"
+        "thepublicgood/payfast": "1.x-dev"
     }
 }
+```
+
+Or install using the command line:
+
+```
+composer require thepublicgood/payfast
 ```
 
 # Usage
@@ -69,10 +75,24 @@ $transaction
 ## Creating a form
 
 ```php
-$payfast = new \TPG\PayFast\PayFast($transaction);
+$payfast = new \TPG\PayFast\PayFast($transaction, 'passphrase');
 
-$form = $payfast->form($submitionDelay);
+$submissionDelay = 10; // seconds
+$form = $payfast->form($submissionDelay);
 
 echo $form;
 ```
 
+## Validating ITN
+
+```php
+namespace App\Http\Controllers;
+
+class PayFastController
+{
+    public function webhook(Request $request)
+    {
+        $validator = new \TPG\PayFast\ITNValidator($request->get());
+    }
+}
+```

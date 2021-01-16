@@ -33,11 +33,11 @@ class Customer
 
     public function attributes(): array
     {
-        return array_filter([
+        return (new Attributes())->prep([
             'name_first' => $this->firstName,
             'name_last' => $this->lastName,
             'email_address' => $this->email,
             'cell_number' => $this->cellNumber,
-        ], static fn ($value) => ! empty($value));
+        ]);
     }
 }

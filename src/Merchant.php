@@ -12,38 +12,40 @@ class Merchant
     protected ?string $cancelUrl = null;
     protected ?string $notifyUrl = null;
 
+    protected $attributes = [
+        'merchant_id' => null,
+        'merchant_key' => null,
+        'return_url' => null,
+        'cancel_url' => null,
+        'notify_url' => null,
+    ];
+
     public function __construct(string $merchantId, string $merchantKey)
     {
-        $this->merchantId = $merchantId;
-        $this->merchantKey = $merchantKey;
+        $this->attributes['merchant_id'] = $merchantId;
+        $this->attributes['merchant_key'] = $merchantKey;
     }
 
     public function setReturnUrl(string $returnUrl): self
     {
-        $this->returnUrl = $returnUrl;
+        $this->attributes['return_url'] = $returnUrl;
         return $this;
     }
 
     public function setCancelUrl(string $cancelUrl): self
     {
-        $this->cancelUrl = $cancelUrl;
+        $this->attributes['cancel_url'] = $cancelUrl;
         return $this;
     }
 
     public function setNotifyUrl(string $notifyUrl): self
     {
-        $this->notifyUrl = $notifyUrl;
+        $this->attributes['notify_url'] = $notifyUrl;
         return $this;
     }
 
     public function attributes(): array
     {
-        return array_filter([
-            'merchant_id' => $this->merchantId,
-            'merchant_key' => $this->merchantKey,
-            'return_url' => $this->returnUrl,
-            'cancel_url' => $this->cancelUrl,
-            'notify_url' => $this->notifyUrl,
-        ], static fn ($value) => ! empty($value));
+        return (new Attributes())->prep($this->attributes);
     }
 }

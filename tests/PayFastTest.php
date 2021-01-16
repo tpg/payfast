@@ -18,7 +18,7 @@ class PayFastTest extends TestCase
         $merchant = new Merchant('ID', 'KEY');
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
-        $payfast = new PayFast($transaction);
+        $payfast = new PayFast($transaction, 'secret');
 
         self::assertStringContainsString(
             'document.querySelector(\'#payfast_form\').submit()',

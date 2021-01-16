@@ -6,6 +6,8 @@ namespace TPG\PayFast\Tests;
 
 use TPG\PayFast\Customer;
 use TPG\PayFast\Merchant;
+use TPG\PayFast\PayFast;
+use TPG\PayFast\PaymentMethod;
 use TPG\PayFast\Transaction;
 
 class TransactionTest extends TestCase
@@ -82,5 +84,60 @@ class TransactionTest extends TestCase
 
         self::assertArrayHasKey('custom_int5', $transaction->attributes());
         self::assertArrayHasKey('custom_str5', $transaction->attributes());
+    }
+
+    /**
+     * @test
+     **/
+    public function ensure_attribute_order(): void
+    {
+        $merchant = new Merchant('ID', 'KEY');
+        $merchant->setNotifyUrl('http://notify.url')
+            ->setCancelUrl('http://cancel.url')
+            ->setReturnUrl('http://return.url');
+
+        $customer = (new Customer())
+            ->setName('First', 'Last')
+            ->setEmail('test@example.com')
+            ->setCellNumber('0123456789');
+
+        $transaction = new Transaction($merchant, 10000, 'Item Name');
+        $transaction->setCustomer($customer)
+            ->setPaymentId('PAYID1')
+            ->setDescription('Item Description')
+            ->setCustomStrings(['S1', 'S2', 'S3', 'S4', 'S5'])
+            ->setCustomIntegers([1, 2, 3, 4, 5])
+            ->setEmailConfirmation(true)
+            ->setEmailConfirmationAddress('confirm@example.com')
+            ->setPaymentMethod(PaymentMethod::CC);
+
+        self::assertSame([
+            'merchant_id',
+            'merchant_key',
+            'return_url',
+            'cancel_url',
+            'notify_url',
+            'name_first',
+            'name_last',
+            'email_address',
+            'cell_number',
+            'm_payment_id',
+            'amount',
+            'item_name',
+            'item_description',
+            'custom_int1',
+            'custom_int2',
+            'custom_int3',
+            'custom_int4',
+            'custom_int5',
+            'custom_str1',
+            'custom_str2',
+            'custom_str3',
+            'custom_str4',
+            'custom_str5',
+            'email_confirmation',
+            'confirmation_address',
+            'payment_method',
+        ], array_keys($transaction->attributes()));
     }
 }

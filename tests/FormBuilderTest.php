@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace TPG\PayFast\Tests;
 
+use TPG\PayFast\Customer;
 use TPG\PayFast\FormBuilder;
 use TPG\PayFast\Merchant;
+use TPG\PayFast\PayFast;
 use TPG\PayFast\Signature;
 use TPG\PayFast\Transaction;
 

@@ -67,11 +67,13 @@ class FormBuilder
 
     protected function attributes(): array
     {
-        return array_merge(
-            $this->transaction->attributes(),
-            [
-                'signature' => $this->signature,
-            ]
+        return (new Attributes())->prep(
+            array_merge(
+                $this->transaction->attributes(),
+                [
+                    'signature' => $this->signature,
+                ]
+            )
         );
     }
 }
