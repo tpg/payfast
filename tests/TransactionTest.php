@@ -55,7 +55,7 @@ class TransactionTest extends TestCase
         $merchant = new Merchant('ID', 'KEY');
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
-        $transaction->setPaymentId('PID1');
+        $transaction->setMerchantPaymentId('PID1');
 
         self::assertEquals('PID1', $transaction->attributes()['m_payment_id']);
     }
@@ -103,7 +103,7 @@ class TransactionTest extends TestCase
 
         $transaction = new Transaction($merchant, 10000, 'Item Name');
         $transaction->setCustomer($customer)
-            ->setPaymentId('PAYID1')
+            ->setMerchantPaymentId('PAYID1')
             ->setDescription('Item Description')
             ->setCustomStrings(['S1', 'S2', 'S3', 'S4', 'S5'])
             ->setCustomIntegers([1, 2, 3, 4, 5])

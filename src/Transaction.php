@@ -10,7 +10,7 @@ class Transaction
     protected string $name;
     protected ?Customer $customer = null;
     protected Merchant $merchant;
-    protected ?string $paymentId = null;
+    protected ?string $merchantPaymentId = null;
     protected ?string $description = null;
     protected array $customIntegers = [];
     protected array $customStrings = [];
@@ -25,15 +25,20 @@ class Transaction
         $this->name = $name;
     }
 
+    public function amount(): int
+    {
+        return $this->amount;
+    }
+
     public function setCustomer(Customer $customer): self
     {
         $this->customer = $customer;
         return $this;
     }
 
-    public function setPaymentId(string $paymentId): self
+    public function setMerchantPaymentId(string $merchantPaymentId): self
     {
-        $this->paymentId = $paymentId;
+        $this->merchantPaymentId = $merchantPaymentId;
         return $this;
     }
 
@@ -79,7 +84,7 @@ class Transaction
             $this->merchant->attributes(),
             $this->customer ? $this->customer->attributes() : [],
             [
-                'm_payment_id' => $this->paymentId,
+                'm_payment_id' => $this->merchantPaymentId,
                 'amount' => $this->getDecimalAmount(),
                 'item_name' => $this->name,
                 'item_description' => $this->description,

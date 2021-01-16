@@ -11,7 +11,7 @@ class Customer
     protected ?string $email = null;
     protected ?string $cellNumber = null;
 
-    public function setName(string $first, string $last = null): self
+    public function setName(?string $first = null, string $last = null): self
     {
         $this->firstName = $first;
         $this->lastName = $last;
@@ -19,16 +19,36 @@ class Customer
         return $this;
     }
 
-    public function setEmail(string $email): self
+    public function firstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function lastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setEmail(?string $email = null): self
     {
         $this->email = $email;
         return $this;
     }
 
-    public function setCellNumber(string $cellNumber): self
+    public function emailAddress(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setCellNumber(?string $cellNumber = null): self
     {
         $this->cellNumber = $cellNumber;
         return $this;
+    }
+
+    public function cellNumber(): ?string
+    {
+        return $this->cellNumber;
     }
 
     public function attributes(): array
