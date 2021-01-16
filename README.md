@@ -1,5 +1,7 @@
 # PayFast Library
 
+![Run Tests](https://github.com/tpg/payfast/workflows/Run%20Tests/badge.svg)
+
 A simple PayFast library.
 
 ---
