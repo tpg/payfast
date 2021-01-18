@@ -148,3 +148,22 @@ class PayFastController
     }
 }
 ```
+
+## Testing
+Payfast provides a simple sandbox against which transactions can be tested. The sandbox can be found here:
+https://sandbox.payfast.co.za. In order to use the sandbox, you'll need to tell the library that you're testing. You
+can do so using the `testing()` method when on the `Payfast` instance when creating a form:
+
+```php
+$payfast = new \TPG\PayFast\PayFast($transaction, 'passphrase');
+
+$form = $payfast->testing()->form();
+```
+
+This will ensure that requests are sent to the sandbox and not the actual PayFast endpoint. The same is true for the
+`ItnValidator`:
+
+```php
+$validator = new \TPG\PayFast\ItnValidator($request->input());
+$valid = $validator->testing()->validate(10000, $passphrase, $request->ip());
+```
