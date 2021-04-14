@@ -6,31 +6,37 @@ namespace TPG\PayFast;
 
 class Signature
 {
-    protected Transaction $transaction;
+    protected array $attributes;
     protected ?string $passphrase;
 
-    public function __construct(Transaction $transaction, ?string $passphrase = null)
+    public function __construct(array $attributes, ?string $passphrase = null)
     {
-        $this->transaction = $transaction;
+        $this->attributes = $attributes;
         $this->passphrase = $passphrase;
     }
 
-    public function generate(): string
+    public function generate(bool $sort = false): string
     {
-        return md5($this->attributes());
+        return md5($this->attributes($sort));
     }
 
-    protected function attributes(): string
+    protected function attributes(bool $sort = false): string
     {
-        $attributes = $this->transaction->attributes();
+        $attributes = $this->attributes;
+
+        $attributes['passphrase'] = $this->passphrase;
 
         array_walk($attributes, static function (&$value, $key) {
-            $value = $key.'='.urlencode(trim($value));
+            $value = $key.'='.urlencode(trim((string)$value));
         });
+
+        if ($sort) {
+            ksort($attributes);
+        }
 
         return implode(
             '&',
             array_values($attributes)
-        ).'&passphrase='.urlencode(trim($this->passphrase));
+        );
     }
 }

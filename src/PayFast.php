@@ -13,10 +13,10 @@ class PayFast
     protected bool $testing = false;
     protected string $passphrase;
 
-    public function __construct(Transaction $transaction, string $passphrase)
+    public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
-        $this->passphrase = $passphrase;
+        $this->passphrase = $transaction->merchant()->passphrase();
     }
 
     public function testing(bool $testing = true): self
@@ -27,7 +27,7 @@ class PayFast
 
     public function form(?int $submitTimeout = null): string
     {
-        $signature = (new Signature($this->transaction, $this->passphrase))->generate();
+        $signature = (new Signature($this->transaction->attributes(), $this->passphrase))->generate();
 
         return (new FormBuilder(
             $this->transaction,

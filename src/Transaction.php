@@ -6,7 +6,17 @@ namespace TPG\PayFast;
 
 class Transaction
 {
+    public const SUBSCRIPTION_FREQUENCY_MONTHLY = 3;
+    public const SUBSCRIPTION_FREQUENCY_QUARTERLY = 4;
+    public const SUBSCRIPTION_FREQUENCY_BIANNUALLY = 5;
+    public const SUBSCRIPTION_FREQUENCY_ANNUALLY = 6;
+
+    protected bool $subscription = false;
+    protected ?\DateTime $billingDate = null;
     protected int $amount;
+    protected int $recurringAmount;
+    protected int $frequency = self::SUBSCRIPTION_FREQUENCY_MONTHLY;
+    protected int $cycles = 0;
     protected string $name;
     protected ?Customer $customer = null;
     protected Merchant $merchant;
@@ -21,13 +31,28 @@ class Transaction
     public function __construct(Merchant $merchant, int $amount, string $name)
     {
         $this->merchant = $merchant;
-        $this->amount = $amount;
+        $this->recurringAmount = $this->amount = $amount;
         $this->name = $name;
+    }
+
+    public function subscription(int $frequency = 3, int $cycles = 0, ?\DateTime $billingDate = null): self
+    {
+        $this->frequency = $frequency;
+        $this->cycles = $cycles;
+        $this->subscription = true;
+        $this->billingDate = $billingDate ?? new \DateTime();
+
+        return $this;
     }
 
     public function amount(): int
     {
         return $this->amount;
+    }
+
+    public function setRecurringAmount(int $amount): self
+    {
+        $this->recurringAmount = $amount;
     }
 
     public function setCustomer(Customer $customer): self
@@ -78,6 +103,11 @@ class Transaction
         return $this;
     }
 
+    public function merchant(): Merchant
+    {
+        return $this->merchant;
+    }
+
     public function attributes(): array
     {
         return (new Attributes())->prep(array_merge(
@@ -85,23 +115,30 @@ class Transaction
             $this->customer ? $this->customer->attributes() : [],
             [
                 'm_payment_id' => $this->merchantPaymentId,
-                'amount' => $this->getDecimalAmount(),
+                'amount' => $this->getDecimalAmount($this->amount),
                 'item_name' => $this->name,
                 'item_description' => $this->description,
             ],
             $this->getCustomAttributes($this->customIntegers, 'custom_int'),
             $this->getCustomAttributes($this->customStrings, 'custom_str'),
             [
-                'email_confirmation' => $this->emailConfirmation ? '1' : '0',
+                'email_confirmation' => $this->emailConfirmation ? 1 : 0,
                 'confirmation_address' => $this->emailConfirmationAddress,
                 'payment_method' => $this->paymentMethod,
-            ]
+            ],
+            $this->subscription ? [
+                'subscription_type' => 1,
+                'billing_date' => $this->billingDate->format('Y-m-d'),
+                'recurring_amount' => $this->getDecimalAmount($this->recurringAmount),
+                'frequency' => $this->frequency,
+                'cycles' => $this->cycles,
+            ] : [],
         ));
     }
 
-    protected function getDecimalAmount(): string
+    protected function getDecimalAmount(int $amount): string
     {
-        return number_format($this->amount / 100, 2, '.', '');
+        return number_format($amount / 100, 2, '.', '');
     }
 
     protected function getCustomAttributes(array $custom, string $keyPrefix): array

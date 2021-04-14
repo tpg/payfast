@@ -15,10 +15,10 @@ class PayFastTest extends TestCase
      **/
     public function it_can_return_a_submit_form(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
-        $payfast = new PayFast($transaction, 'secret');
+        $payfast = new PayFast($transaction->subscription());
 
         self::assertStringContainsString(
             'document.querySelector(\'#payfast_form\').submit()',

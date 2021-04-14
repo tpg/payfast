@@ -18,10 +18,10 @@ class FormBuilderTest extends TestCase
      **/
     public function it_can_build_a_form(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
-        $signature = (new Signature($transaction, 'passphrase'))->generate();
+        $signature = (new Signature($transaction->attributes()))->generate();
 
         $form = (new FormBuilder(
             $transaction,

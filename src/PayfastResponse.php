@@ -13,18 +13,8 @@ class PayfastResponse
 
     protected Customer $customer;
     protected Transaction $transaction;
-    protected string $merchantPaymentId;
-    protected string $payfastPaymentId;
-    protected string $paymentStatus;
-    protected string $itemName;
-    protected string $itemDescription;
-    protected float $amountGross;
-    protected float $amountFee;
-    protected float $amountNet;
     protected array $customIntegers = [];
     protected array $customStrings = [];
-    protected string $merchantId;
-    protected string $signature;
 
     public function __construct(array $data)
     {
@@ -107,6 +97,11 @@ class PayfastResponse
     public function signature(): string
     {
         return $this->data['signature'];
+    }
+
+    public function token(): ?string
+    {
+        return $this->data['token'] ?? null;
     }
 
     public function paymentStatus(): string

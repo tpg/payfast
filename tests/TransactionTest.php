@@ -17,7 +17,7 @@ class TransactionTest extends TestCase
      **/
     public function it_can_create_a_new_transaction_instance(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
 
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
@@ -26,8 +26,9 @@ class TransactionTest extends TestCase
             [
                 'amount' => '100.00',
                 'item_name' => 'Transaction',
+                'email_confirmation' => 0,
             ]
-        ), $transaction->attributes());;
+        ), $transaction->attributes());
     }
 
     /**
@@ -35,7 +36,7 @@ class TransactionTest extends TestCase
      **/
     public function it_can_have_a_customer(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
         $customer = (new Customer())
             ->setName('First', 'Last');
 
@@ -52,7 +53,7 @@ class TransactionTest extends TestCase
      **/
     public function it_can_have_a_payment_id(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
         $transaction->setMerchantPaymentId('PID1');
@@ -65,7 +66,7 @@ class TransactionTest extends TestCase
      **/
     public function it_can_have_custom_attributes(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
         $transaction = new Transaction($merchant, 10000, 'Transaction');
 
         $transaction->setCustomIntegers([
@@ -91,7 +92,7 @@ class TransactionTest extends TestCase
      **/
     public function ensure_attribute_order(): void
     {
-        $merchant = new Merchant('ID', 'KEY');
+        $merchant = new Merchant('ID', 'KEY', 'passphrase');
         $merchant->setNotifyUrl('http://notify.url')
             ->setCancelUrl('http://cancel.url')
             ->setReturnUrl('http://return.url');
@@ -102,7 +103,9 @@ class TransactionTest extends TestCase
             ->setCellNumber('0123456789');
 
         $transaction = new Transaction($merchant, 10000, 'Item Name');
+
         $transaction->setCustomer($customer)
+            ->subscription()
             ->setMerchantPaymentId('PAYID1')
             ->setDescription('Item Description')
             ->setCustomStrings(['S1', 'S2', 'S3', 'S4', 'S5'])
@@ -138,6 +141,11 @@ class TransactionTest extends TestCase
             'email_confirmation',
             'confirmation_address',
             'payment_method',
+            'subscription_type',
+            'billing_date',
+            'recurring_amount',
+            'frequency',
+            'cycles',
         ], array_keys($transaction->attributes()));
     }
 }

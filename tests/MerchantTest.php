@@ -15,7 +15,7 @@ class MerchantTest extends TestCase
      **/
     public function it_can_create_a_new_merchant(): void
     {
-        $merchant = new Merchant('MERCHANT_ID', 'MERCHANT_KEY');
+        $merchant = new Merchant('MERCHANT_ID', 'MERCHANT_KEY', 'passphrase');
         $merchant->setReturnUrl('http://return.url')
             ->setCancelUrl('http://cancel.url')
             ->setNotifyUrl('http://notify.url');

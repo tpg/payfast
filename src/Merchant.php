@@ -6,12 +6,6 @@ namespace TPG\PayFast;
 
 class Merchant
 {
-    protected string $merchantId;
-    protected string $merchantKey;
-    protected ?string $returnUrl = null;
-    protected ?string $cancelUrl = null;
-    protected ?string $notifyUrl = null;
-
     protected $attributes = [
         'merchant_id' => null,
         'merchant_key' => null,
@@ -19,11 +13,28 @@ class Merchant
         'cancel_url' => null,
         'notify_url' => null,
     ];
+    protected string $passphrase;
 
-    public function __construct(string $merchantId, string $merchantKey)
+    public function __construct(string $merchantId, string $merchantKey, string $passphrase)
     {
         $this->attributes['merchant_id'] = $merchantId;
         $this->attributes['merchant_key'] = $merchantKey;
+        $this->passphrase = $passphrase;
+    }
+
+    public function merchantId(): string
+    {
+        return $this->attributes['merchant_id'];
+    }
+
+    public function merchantKey(): string
+    {
+        return $this->attributes['merchant_key'];
+    }
+
+    public function passphrase(): string
+    {
+        return $this->passphrase;
     }
 
     public function setReturnUrl(string $returnUrl): self

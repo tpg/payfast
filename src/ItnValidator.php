@@ -50,6 +50,11 @@ class ItnValidator
         return true;
     }
 
+    public function token(): ?string
+    {
+        return $this->response->token();
+    }
+
     protected function getParamString(string $passphrase): string
     {
         $data = $this->data;
