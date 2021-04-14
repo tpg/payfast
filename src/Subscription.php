@@ -62,10 +62,6 @@ class Subscription
 
     public function unpause(): array
     {
-        if ($this->paused === false) {
-            throw new PayfastException('Subscription is not paused', 6501);
-        }
-
         $response = $this->request('put', 'unpause');
         if (Arr::get($response, 'status') === 'success') {
             $this->paused = false;
