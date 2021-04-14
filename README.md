@@ -1,3 +1,5 @@
+[![Run Tests](https://github.com/tpg/payfast/actions/workflows/php.yml/badge.svg)](https://github.com/tpg/payfast/actions/workflows/php.yml)
+
 # Payfast
 
 A simple PayFast library.
