@@ -50,7 +50,7 @@ class Subscription
     public function pause(int $cycles = 1): array
     {
         $response = $this->request('put', 'pause', [
-//            'cycles' => $cycles,
+            'cycles' => $cycles,
         ]);
 
         if (Arr::get($response, 'status') === 'success') {
@@ -90,7 +90,7 @@ class Subscription
         $response = $this->request('patch', 'update', $data);
 
         if (Arr::get($response, 'status') === 'success') {
-            $this->setData(Arr::get($response, 'data.response'));
+            $this->setData(array_merge($this->data, Arr::get($response, 'data.response')));
         }
 
         return $response;
@@ -177,12 +177,12 @@ class Subscription
 
     public function paused(): bool
     {
-        return $this->status() === self::STATUS_PAUSED;
+        return $this->paused;
     }
 
     public function cancelled(): bool
     {
-        return $this->status() === self::STATUS_CANCELLED;
+        return $this->cancelled;
     }
 
     public function statusReason(): ?string

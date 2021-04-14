@@ -107,5 +107,107 @@ class SubscriptionTest extends TestCase
 
         $subscription = new Subscription($merchant, $token, $client);
         $subscription->pause();
+
+        self::assertTrue($subscription->paused());
+    }
+
+    /**
+     * @test
+     **/
+    public function it_can_unpause_a_subscription(): void
+    {
+        $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
+        $merchant = new Merchant('ID', 'KEY', 'PASSPHRASE');
+
+        $success = [
+            'code' => 200,
+            'status' => 'success',
+            'data' => [
+                'response' => true,
+            ]
+        ];
+
+        $handler = new MockHandler([
+            new Response(200, [], json_encode($success, JSON_THROW_ON_ERROR)),
+        ]);
+
+        $client = new Client([
+            'handler' => $handler,
+        ]);
+
+        $subscription = new Subscription($merchant, $token, $client);
+        $subscription->unpause();
+
+        self::assertFalse($subscription->paused());
+    }
+
+    /**
+     * @test
+     **/
+    public function it_can_cancel_a_subscription(): void
+    {
+        $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
+        $merchant = new Merchant('ID', 'KEY', 'PASSPHRASE');
+
+        $success = [
+            'code' => 200,
+            'status' => 'success',
+            'data' => [
+                'response' => true,
+            ]
+        ];
+
+        $handler = new MockHandler([
+            new Response(200, [], json_encode($success, JSON_THROW_ON_ERROR)),
+        ]);
+
+        $client = new Client([
+            'handler' => $handler,
+        ]);
+
+        $subscription = new Subscription($merchant, $token, $client);
+        $subscription->cancel();
+
+        self::assertTrue($subscription->cancelled());
+    }
+
+    /**
+     * @test
+     **/
+    public function it_can_update_a_subscription()
+    {
+        $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
+        $merchant = new Merchant('ID', 'KEY', 'PASSPHRASE');
+
+        $success = [
+            'code' => 200,
+            'status' => 'success',
+            'data' => [
+                'response' => [
+                    'amount' => 10000,
+                    'cycles' => 10,
+                    'cycles_complete' => 1,
+                    'frequency' => 3,
+                    'run_date' => (new \DateTime())->format(DATE_ATOM),
+                    'status' => 1,
+                    'token' => $token,
+                ],
+            ]
+        ];
+
+        $handler = new MockHandler([
+            new Response(200, [], json_encode($success, JSON_THROW_ON_ERROR)),
+        ]);
+
+        $client = new Client([
+            'handler' => $handler,
+        ]);
+
+        $subscription = new Subscription($merchant, $token, $client);
+        $subscription->update([
+            'cycles' => 10,
+        ]);
+
+        self::assertSame(10, $subscription->cycles());
     }
 }
