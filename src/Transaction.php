@@ -53,6 +53,7 @@ class Transaction
     public function setRecurringAmount(int $amount): self
     {
         $this->recurringAmount = $amount;
+        return $this;
     }
 
     public function setCustomer(Customer $customer): self

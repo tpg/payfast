@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.2] 20-05-2021
+### Changed
+* Fixed a bug where the `setRecurringAmount` method on the `Transaction` class had a missing return value.
+* Updated the `Subscription->request()` method to include the thrown exception when not able to communicate with PayFast.
+
 ## [0.2.1] 20-05-2021
 ### Changed
 * The `ItnValidator->getParamString()` method's visibility has been changed from `protected` to `public`.

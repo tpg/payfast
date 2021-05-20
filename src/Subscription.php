@@ -135,7 +135,11 @@ class Subscription
 
             return $data;
         } catch (ClientException $exception) {
-            throw new PayfastException('Unable to communicate with PayFast');
+            throw new PayfastException(
+                'Unable to communicate with PayFast',
+                $exception->getCode(),
+                $exception
+            );
         }
     }
 
