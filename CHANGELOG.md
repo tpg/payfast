@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.1] 20-05-2021
+### Changed
+* The `ItnValidator->getParamString()` method's visibility has been changed from `protected` to `public`.
+
 ## [0.2.0] 20-05-2021
 ### Changed
 * The `PayfastResponse` class has been renamed to `PayFastResponse` (uppercase "F").
