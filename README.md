@@ -141,7 +141,7 @@ class PayFastController
         $response = $validator->response();
         
         $mpid = $response->merchantPaymentId();  // Original payment ID set on the transaction
-        $pfid = $response->payfastPaymentId();   // PayFast's payment ID
+        $pfid = $response->payFastPaymentId();   // PayFast's payment ID
         $name = $response->name();           // Item name or order number
         $description = $response->description();    // Item or order description
         $gross = $response->amountGross();        // Total charge

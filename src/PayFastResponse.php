@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace TPG\PayFast;
 
+use DateTime;
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 use TPG\PayFast\Exceptions\ValidationException;
 
-class PayfastResponse
+class PayFastResponse
 {
     protected array $data;
 
@@ -32,10 +34,10 @@ class PayfastResponse
 
     public function merchantPaymentId(): ?string
     {
-        return $this->data['m_payment_id'];
+        return Arr::get($this->data, 'm_payment_id');
     }
 
-    public function payfastPaymentId(): string
+    public function payFastPaymentId(): string
     {
         return $this->data['pf_payment_id'];
     }
@@ -47,7 +49,7 @@ class PayfastResponse
 
     public function description(): ?string
     {
-        return $this->data['item_description'];
+        return Arr::get($this->data, 'item_description');
     }
 
     public function amountGross(): int
@@ -101,11 +103,22 @@ class PayfastResponse
 
     public function token(): ?string
     {
-        return $this->data['token'] ?? null;
+        return Arr::get($this->data, 'token');
     }
 
     public function paymentStatus(): string
     {
         return $this->data['payment_status'];
+    }
+
+    public function billingDate(): ?DateTime
+    {
+        $date = Arr::get($this->data, 'billing_date');
+
+        if (! $date) {
+            return null;
+        }
+
+        return DateTime::createFromFormat('Y-m-d', $date);
     }
 }

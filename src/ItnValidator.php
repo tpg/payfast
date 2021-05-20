@@ -10,7 +10,7 @@ use TPG\PayFast\Exceptions\ValidationException;
 class ItnValidator
 {
     protected array $data;
-    protected PayfastResponse $response;
+    protected PayFastResponse $response;
     protected bool $testing;
     protected ?string $error = null;
 
@@ -18,7 +18,7 @@ class ItnValidator
     {
         $this->data = $responseData;
 
-        $this->response = new PayfastResponse($responseData);
+        $this->response = new PayFastResponse($responseData);
     }
 
     public function testing(bool $testing = true): self
@@ -28,7 +28,7 @@ class ItnValidator
         return $this;
     }
 
-    public function response(): PayfastResponse
+    public function response(): PayFastResponse
     {
         return $this->response;
     }

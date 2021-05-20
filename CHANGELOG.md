@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0] 20-05-2021
+### Changed
+* The `PayfastResponse` class has been renamed to `PayFastResponse` (uppercase "F").
+* The `PayFastResponse->payfastPaymentId()` method has been renamed to `payFastPaymentId()`.
+  
+### Added
+* Added a `billingDate` method to `PayFastResponse`.
+
 ## [0.1.0] 14-04-2021
 ### Changed
 * Documentation updated.
