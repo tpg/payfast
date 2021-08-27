@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3] 27-08-2021
+### Fixed
+* When posting to PayFast in production, the url should be `www.payfast.co.za` (with the "www" bit).
+
+### Changed
+* If no email confirmation is required, don't include the `email_confirmation` attribute with a false value.
+
 ## [0.2.2] 20-05-2021
 ### Changed
 * Fixed a bug where the `setRecurringAmount` method on the `Transaction` class had a missing return value.

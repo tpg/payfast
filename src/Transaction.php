@@ -123,7 +123,7 @@ class Transaction
             $this->getCustomAttributes($this->customIntegers, 'custom_int'),
             $this->getCustomAttributes($this->customStrings, 'custom_str'),
             [
-                'email_confirmation' => $this->emailConfirmation ? 1 : 0,
+                'email_confirmation' => $this->emailConfirmation ? 1 : null,
                 'confirmation_address' => $this->emailConfirmationAddress,
                 'payment_method' => $this->paymentMethod,
             ],

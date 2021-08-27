@@ -41,7 +41,7 @@ class PayFast
     {
         return implode('', [
             'https://',
-            $testing ? 'sandbox.' : null,
+            $testing ? 'sandbox.' : 'www.',
             'payfast.co.za/eng/process',
         ]);
     }
