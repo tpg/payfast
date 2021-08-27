@@ -30,7 +30,6 @@ class SubscriptionTest extends TestCase
             [
                 'amount' => '100.00',
                 'item_name' => 'Subscription',
-                'email_confirmation' => 0,
                 'subscription_type' => 1,
                 'billing_date' => (new \DateTime())->format('Y-m-d'),
                 'recurring_amount' => '100.00',

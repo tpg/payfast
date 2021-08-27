@@ -26,7 +26,6 @@ class TransactionTest extends TestCase
             [
                 'amount' => '100.00',
                 'item_name' => 'Transaction',
-                'email_confirmation' => 0,
             ]
         ), $transaction->attributes());
     }
