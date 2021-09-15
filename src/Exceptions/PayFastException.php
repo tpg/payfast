@@ -6,7 +6,7 @@ namespace TPG\PayFast\Exceptions;
 
 use Throwable;
 
-class PayfastException extends \Exception
+class PayFastException extends \Exception
 {
 
 }

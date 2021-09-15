@@ -7,7 +7,7 @@ namespace TPG\PayFast;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
-use TPG\PayFast\Exceptions\PayfastException;
+use TPG\PayFast\Exceptions\PayFastException;
 
 class Subscription
 {
@@ -130,12 +130,12 @@ class Subscription
             $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
 
             if ($response->getStatusCode() !== 200) {
-                throw new PayfastException($data['status'], $data['code']);
+                throw new PayFastException($data['status'], $data['code']);
             }
 
             return $data;
         } catch (ClientException $exception) {
-            throw new PayfastException(
+            throw new PayFastException(
                 'Unable to communicate with PayFast',
                 $exception->getCode(),
                 $exception
