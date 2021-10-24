@@ -21,6 +21,17 @@ class ItnValidator
         $this->response = new PayFastResponse($responseData);
     }
 
+    /**
+     * @deprecated Version 1 will flush on ItnValidator construction. Won't need to call this at all.
+     */
+    public function flush(): self
+    {
+        header('HTTP/1.0 200 OK');
+        flush();
+
+        return $this;
+    }
+
     public function testing(bool $testing = true): self
     {
         $this->testing = $testing;

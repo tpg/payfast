@@ -130,13 +130,12 @@ class PayFastController
 {
     public function webhook(Request $request)
     {
-        // From the PayFast docs... Send a 200 response right away...
-        header('HTTP/1.0 200 OK');
-        flush();
-    
         // Create a new validator
         $validator = new \TPG\PayFast\ItnValidator($request->input());
         
+        // From the PayFast docs... Send a 200 response right away...
+        $validator->flush();
+    
         // You have access to all the response data through the `PayfastResponse` class.
         $response = $validator->response();
         
