@@ -177,7 +177,7 @@ class PayFastController
 
 ## Subscriptions
 
-Subscriptions are start in the same way as standard transactions. Simply add a call to `subscription()` on the `Transaction` instance:
+Subscriptions are started in the same way as standard transactions. Simply add a call to `subscription()` on the `Transaction` instance:
 
 ```php
 $transaction = new Transaction($merchant, 10000);
@@ -272,7 +272,7 @@ PayFast retains the information about cancelled transaction, so even if you fetc
 
 ## Sandbox
 
-PayFast provides a simple sandbox against which transactions can be tested. The sandbox can be found at [https://sandbox.payfast.co.za](https://sandbox.payfast.co.za). In order to use the sandbox, you'll need to tell the library that you're testing. You can do so using the `testing()` method when on the `Payfast` instance when creating a form:
+PayFast provides a simple sandbox against which transactions can be tested. The sandbox can be found at [https://sandbox.payfast.co.za](https://sandbox.payfast.co.za). In order to use the sandbox, you'll need to tell the library that you're testing. You can do so by calling the `testing()` method on the `Payfast` instance when creating a form:
 
 ```php
 $payfast = new PayFast($transaction);
