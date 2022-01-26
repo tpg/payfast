@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.4] 26-01-2022
+## [0.2.5] 26-01-2022
 ### Fixed
 * Exception thrown when using `ItnValidator->validate()` without calling `testing()`. The validator will now assume testing is `false`.
 
