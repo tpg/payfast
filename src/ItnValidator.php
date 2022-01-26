@@ -11,7 +11,7 @@ class ItnValidator
 {
     protected array $data;
     protected PayFastResponse $response;
-    protected bool $testing;
+    protected bool $testing = false;
     protected ?string $error = null;
 
     public function __construct(array $responseData)

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.4] 26-01-2022
+### Fixed
+* Exception thrown when using `ItnValidator->validate()` without calling `testing()`. The validator will now assume testing is `false`.
+
 ## [0.2.3] 27-08-2021
 ### Fixed
 * When posting to PayFast in production, the url should be `www.payfast.co.za` (with the "www" bit).

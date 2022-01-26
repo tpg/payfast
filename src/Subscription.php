@@ -110,30 +110,11 @@ class Subscription
 
     protected function request(string $method, string $uri = null, array $body = []): array
     {
-        $headers = [
-            'merchant-id' => $this->merchant->merchantId(),
-            'version' => 'v1',
-            'timestamp' => (new \DateTime())->format(DATE_ATOM),
-        ];
-
-        $headers['signature'] = (new Signature(array_merge($headers, $body), $this->merchant->passphrase()))->generate(true);
-
         try {
-            $response = $this->client->request($method, self::ENDPOINT . '/' . $this->token . '/' . $uri, [
-                'headers' => $headers,
-                'form_params' => $body,
-                'query' => [
-                    'testing' => $this->testing ? 'true' : 'false',
-                ],
-            ]);
 
-            $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+            return (new Request($this->merchant, $this->client))->testing($this->testing)
+                ->make($method, $this->token.'/'.$uri, $body);
 
-            if ($response->getStatusCode() !== 200) {
-                throw new PayFastException($data['status'], $data['code']);
-            }
-
-            return $data;
         } catch (ClientException $exception) {
             throw new PayFastException(
                 'Unable to communicate with PayFast',
