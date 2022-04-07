@@ -43,6 +43,15 @@ $merchant
 
 Since PayFast will need to have access to these URLs, during testing it can be useful to have access to your test environment. Take a look at [Expose](https://beyondco.de/docs/expose/introduction) if you need this.
 
+## Ping
+PayFast provides a ping endpoint which can be used to check that the API is accepting requests. It's also handy for validating merchant information.
+
+```php
+$merchant = new \TPG\PayFast\Merchant('MERCHANT_ID', 'MERCHANT_KEY', 'PASSPHRASE');
+
+$valid = $merchant->ping();
+```
+
 ## Customer
 
 A customer is not required for any transaction. However, if you'd like to set this data, you can do so by creating a new `Customer` instance and setting the name, email and cell number. This can help improve the customer experience if the user has registered an account with PayFast.

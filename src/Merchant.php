@@ -7,9 +7,10 @@ namespace TPG\PayFast;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
+use TPG\PayFast\Contracts\MerchantInterface;
 use TPG\PayFast\Exceptions\PayFastException;
 
-class Merchant
+class Merchant implements MerchantInterface
 {
     protected $attributes = [
         'merchant_id' => null,
