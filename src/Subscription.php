@@ -113,7 +113,7 @@ class Subscription
         try {
 
             return (new Request($this->merchant, $this->client))->testing($this->testing)
-                ->make($method, $this->token.'/'.$uri, $body);
+                ->make($method, 'subscriptions/'.$this->token.'/'.$uri, $body);
 
         } catch (ClientException $exception) {
             throw new PayFastException(

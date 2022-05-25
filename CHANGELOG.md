@@ -1,5 +1,9 @@
 # Changelog
 
+##[0.2.6] 25-05-2022
+### Fixed
+* Error when making subscription API requests. The endpoint is incorrect.
+
 ## [0.2.5] 26-01-2022
 ### Fixed
 * Exception thrown when using `ItnValidator->validate()` without calling `testing()`. The validator will now assume testing is `false`.
