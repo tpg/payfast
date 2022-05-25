@@ -1,8 +1,12 @@
 # Changelog
 
-##[0.2.6] 25-05-2022
+##[0.3.1] 25-05-2022
 ### Fixed
 * Error when making subscription API requests. The endpoint is incorrect.
+
+# [0.3.0] 07-04-2022
+### Changed
+* Updated to support Laravel 9.
 
 ## [0.2.5] 26-01-2022
 ### Fixed
