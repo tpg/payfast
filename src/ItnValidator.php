@@ -145,12 +145,12 @@ class ItnValidator
             ]);
 
             if ($response->getStatusCode() !== 200) {
-                throw new ValidationException('Unable to confirm order details with PayFast');
+                throw new ValidationException('Unable to confirm order details with PayFast. PayFast Status code '.$response->getStatusCode());
             }
 
         } catch (\Exception $e) {
 
-            throw new ValidationException('Unable to confirm order details with PayFast');
+            throw new ValidationException('Unable to confirm order details with PayFast. Exception ', $e->getCode(), $e);
         }
 
         return true;
