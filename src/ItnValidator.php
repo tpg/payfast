@@ -160,7 +160,7 @@ class ItnValidator
     {
         return implode('', [
             'https://',
-            $testing ? 'sandbox.' : '',
+            $testing ? 'sandbox.' : 'www.',
             'payfast.co.za'
         ]);
     }
