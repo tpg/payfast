@@ -1,5 +1,8 @@
 # Changelog
 
+##[0.3.2] 29-06-2022
+* Updated the PayFast validation hostname to include the "www." prefix.
+
 ##[0.3.1] 25-05-2022
 ### Fixed
 * Error when making subscription API requests. The endpoint is incorrect.
