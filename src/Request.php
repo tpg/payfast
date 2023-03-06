@@ -34,8 +34,8 @@ class Request
     {
         try {
             $response = $this->client->request($method, $this->endpoint($uri), [
-                'headers' => $this->headers(),
-                'form_params' => $formParams,
+                'headers' => $this->headers($formParams),
+                'json' => $formParams,
                 'query' => [
                     'testing' => $this->testing ? 'true' : 'false',
                 ]
