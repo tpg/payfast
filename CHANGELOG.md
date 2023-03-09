@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.4 - 2023-03-09
+
+- Laravel 10 support.
+- Dropped support for PHP 7.4.
+
 ## v0.3.3 - 2023-03-06
 
 - [Bug] Fixed a bug in the request that was not including the body parameters in the signature.
