@@ -13,14 +13,14 @@
         "php": ">=7.4",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.4",
-        "illuminate/collections": "^8.0|^9.0"
+        "illuminate/collections": "^8.0|^9.0|^10.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "roave/security-advisories": "dev-master",
         "spatie/ray": "^1.10",
         "symfony/var-dumper": "^5.2|^6.0",
-        "orchestra/testbench": "^6.24|^7.3"
+        "orchestra/testbench": "^6.24|^7.3|8.*"
     },
     "autoload": {
         "psr-4": {
