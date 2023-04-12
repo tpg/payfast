@@ -6,17 +6,7 @@ A simple PayFast library.
 
 # Installation
 
-Install the PayFast library through composer by adding it to your `composer.json` file:
-
-```json
-{
-    "require": {
-        "thepublicgood/payfast": "1.x-dev"
-    }
-}
-```
-
-Or install using the command line:
+Install the PayFast library through composer using the command line:
 
 ```bash
 composer require thepublicgood/payfast
