@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.0 - 2023-04-12
+
+PayFast frustrates me somewhat. Anyway...
+
+- Dropped support for PHP before v8.1.
+- PayFast appear to be throwing errors when including an empty JSON string. The `Request->make()` method has been updated to set the body to `null` if no array is provided. This does away with the error from PayFast
+
 ## v0.3.4 - 2023-03-09
 
 - Laravel 10 support.
