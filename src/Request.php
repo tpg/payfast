@@ -33,13 +33,16 @@ class Request
     public function make(string $method, string $uri, array $formParams = []): array
     {
         try {
-            $response = $this->client->request($method, $this->endpoint($uri), [
+
+            $data = [
                 'headers' => $this->headers($formParams),
-                'json' => $formParams,
+                'json' => $formParams ?: null,
                 'query' => [
-                    'testing' => $this->testing ? 'true' : 'false',
+                    ...$this->testing ? ['testing' => 'true'] : [],
                 ]
-            ]);
+            ];
+
+            $response = $this->client->request($method, $this->endpoint($uri), $data);
 
             if ($response->getStatusCode() !== 200) {
                 throw new PayFastException('Bad response from PayFast API');
@@ -49,7 +52,7 @@ class Request
 
         } catch (ClientException $exception) {
 
-            throw new PayFastException($this->getErrorMessage($exception->getCode()), $exception->getCode());
+            throw new PayFastException($exception->getMessage(), $exception->getCode());
 
         } catch (\JsonException $exception) {
 
@@ -89,21 +92,5 @@ class Request
         }
 
         return self::ENDPOINT.$uri;
-    }
-
-    protected function getErrorMessage(int $code): string
-    {
-        switch ($code) {
-            case 400:
-                return 'Invalid request';
-            case 401:
-                return 'Authorization failed';
-            case 404:
-                return 'Service not found';
-            case 429:
-                return 'Rate limited';
-            case 500:
-                return 'PayFast Application/Communication error';
-        }
     }
 }
