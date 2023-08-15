@@ -4,30 +4,21 @@ declare(strict_types=1);
 
 namespace TPG\PayFast;
 
-class FormBuilder
+readonly class FormBuilder
 {
-    protected Transaction $transaction;
-    protected string $signature;
-    protected string $host;
-    protected ?int $submitTimeout;
-
     public function __construct(
-        Transaction $transaction,
-        string $signature,
-        string $host,
-        ?int $submitTimeout = null
+        protected Transaction $transaction,
+        protected string $signature,
+        protected string $host,
+        protected ?int $submitTimeout = null
     ) {
-        $this->transaction = $transaction;
-        $this->signature = $signature;
-        $this->host = $host;
-        $this->submitTimeout = $submitTimeout;
     }
 
     public function build(): string
     {
         $form = implode("\n", [
             '<form method="post" action="'.$this->host.'" id="payfast_form">',
-            ...$this->getFormAttributes(),
+            ...$this->formAttributes(),
             '</form>',
         ]);
 
@@ -54,7 +45,7 @@ class FormBuilder
         return $this->submitTimeout * 1000;
     }
 
-    protected function getFormAttributes(): array
+    protected function formAttributes(): array
     {
         $attributes = [];
 

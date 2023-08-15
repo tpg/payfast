@@ -6,7 +6,7 @@ A simple PayFast library.
 
 # Installation
 
-Install the PayFast library through composer using the command line:
+Install the Payfast library through composer using the command line:
 
 ```bash
 composer require thepublicgood/payfast
@@ -14,16 +14,16 @@ composer require thepublicgood/payfast
 
 # Usage
 
-PayFast doesn't currently have an on-site payment solution in production. There is a beta service available, but this library does not support that. When the service is in production and support has been added to the sandbox environment, then I'll update this library. Until then, this library only supports the PayFast custom integration option.
+Payfast doesn't currently have an on-site payment solution in production. There is a beta service available, but this library does not support that. When the service is in production and support has been added to the sandbox environment, then I'll update this library. Until then, this library only supports the Payfast custom integration option.
 
 ## Merchant
 
-All transactions require a merchant object. PayFast will provide you with your merchant ID and merchant Key. You will also need to log into your PayFast account and set a passphrase. Although not required by PayFast, this library requires a passphrase to be set.
+All transactions require a merchant object. Payfast will provide you with your merchant ID and merchant Key. You will also need to log into your Payfast account and set a passphrase. Although not required by Payfast, this library requires a passphrase to be set.
 
 Create a new merchant object from the `Merchant` class and pass your authentication data in. You can set the return URL, cancel URL and notify URL on the Merchant instance. You'll want to set all of these to endpoints at your website.
 
 ```php
-$merchant = new \TPG\PayFast\Merchant('MERCHANT_ID', 'MERCHANT_KEY', 'PASSPHRASE');
+$merchant = new \TPG\Payfast\Merchant('MERCHANT_ID', 'MERCHANT_KEY', 'PASSPHRASE');
 
 $merchant
     ->setReturnUrl($returnUrl)
@@ -31,14 +31,14 @@ $merchant
     ->setNotifyUrl($notifyUrl);
 ```
 
-Since PayFast will need to have access to these URLs, during testing it can be useful to have access to your test environment. Take a look at [Expose](https://beyondco.de/docs/expose/introduction) if you need this.
+Since Payfast will need to have access to these URLs, during testing it can be useful to have access to your test environment. Take a look at [Expose](https://beyondco.de/docs/expose/introduction) if you need this.
 
 ## Customer
 
-A customer is not required for any transaction. However, if you'd like to set this data, you can do so by creating a new `Customer` instance and setting the name, email and cell number. This can help improve the customer experience if the user has registered an account with PayFast.
+A customer is not required for any transaction. However, if you'd like to set this data, you can do so by creating a new `Customer` instance and setting the name, email and cell number. This can help improve the customer experience if the user has registered an account with Payfast.
 
 ```php
-$customer = new \TPG\PayFast\Customer();
+$customer = new \TPG\Payfast\Customer();
 
 $customer
     ->setName('First', 'Last')
@@ -48,10 +48,10 @@ $customer
 
 ## Transactions
 
-Transactions are where all the magic happens. The `Transaction` class constructor accepts three parameters: the `Merchant` instance, the value of the transaction (in South African cents) and the name of the item. The name could be some reference to the transaction so users can see what they're paying for on the PayFast website.
+Transactions are where all the magic happens. The `Transaction` class constructor accepts three parameters: the `Merchant` instance, the value of the transaction (in South African cents) and the name of the item. The name could be some reference to the transaction so users can see what they're paying for on the Payfast website.
 
 ```php
-$transaction = new \TPG\PayFast\Transaction($merchant, 10000, 'Item Name');
+$transaction = new \TPG\Payfast\Transaction($merchant, 10000, 'Item Name');
 ```
 
 Once you have a transaction object, you can make a number of changes:
@@ -77,7 +77,7 @@ $transaction
     ])
     ->setEmailConfirmation(true)            // Where to send email confirmations
     ->setEmailConfirmationAddress('email@test.com')  // The confirmation email
-    ->setPaymentMethod(\TPG\PayFast\PaymentMethod::ALL); // Payment method
+    ->setPaymentMethod(\TPG\Payfast\PaymentMethod::ALL); // Payment method
 ```
 
 The payment method is just a way to limit what payment methods you accept. In most cases you'll probably want `PaymentMethod::ALL`, but there are a few others:
@@ -96,10 +96,10 @@ There is no way to allow a combination of these. It's either all or one.
 
 ## Creating a form
 
-Create a new `PayFast` instance and pass in the transaction. We can now generate a simple HTML form which can be placed in your view. The form ID is always `#payfast_form` so you can refer to it using a bit of JavaScript, or you can pass an integer value to the `form()` method to automatically submit the form after that number of seconds have elapsed.
+Create a new `Payfast` instance and pass in the transaction. We can now generate a simple HTML form which can be placed in your view. The form ID is always `#payfast_form` so you can refer to it using a bit of JavaScript, or you can pass an integer value to the `form()` method to automatically submit the form after that number of seconds have elapsed.
 
 ```php
-$payfast = new \TPG\PayFast\PayFast($transaction);
+$payfast = new \TPG\Payfast\Payfast($transaction);
 
 $submissionDelay = 10; // seconds to wait before automatically submitting the form.
 $form = $payfast->form($submissionDelay);
@@ -111,26 +111,26 @@ If you don't supply a delay, you will need to submit the form yourself. Remember
 
 ## Validating the ITN
 
-Once a transaction has ben submitted to PayFast and you've set a notify URL, you can validate the ITN that comes back from PayFast using the `ItnValidator` class. PayFast recommend setting a header right away and then continuing with the validation process.
+Once a transaction has ben submitted to Payfast and you've set a notify URL, you can validate the ITN that comes back from Payfast using the `ItnValidator` class. Payfast recommend setting a header right away and then continuing with the validation process.
 
 ```php
 namespace App\Http\Controllers;
 
-class PayFastController
+class PayfastController
 {
     public function webhook(Request $request)
     {
         // Create a new validator
-        $validator = new \TPG\PayFast\ItnValidator($request->input());
+        $validator = new \TPG\Payfast\ItnValidator($request->input());
         
-        // From the PayFast docs... Send a 200 response right away...
+        // From the Payfast docs... Send a 200 response right away...
         $validator->flush();
     
         // You have access to all the response data through the `PayfastResponse` class.
         $response = $validator->response();
         
         $mpid = $response->merchantPaymentId();  // Original payment ID set on the transaction
-        $pfid = $response->payFastPaymentId();   // PayFast's payment ID
+        $pfid = $response->payFastPaymentId();   // Payfast's payment ID
         $name = $response->name();           // Item name or order number
         $description = $response->description();    // Item or order description
         $gross = $response->amountGross();        // Total charge
@@ -149,7 +149,7 @@ class PayFastController
         //--------------------
         
         // To validate the transaction, first ensure the transaction is COMPLETE:
-        if ($response->paymentStatus() !== \TPG\PayFast\PaymentStatus::COMPLETE) {
+        if ($response->paymentStatus() !== \TPG\Payfast\PaymentStatus::COMPLETE) {
             // incomplete...
         }
         
@@ -174,7 +174,7 @@ $transaction = new Transaction($merchant, 10000);
 $transaction->subscription();
 ```
 
-This will ensure the transaction is passed to PayFast as a recurring transaction. The `subscription` method also takes a few options to customise the subscription. You can specify the frequency, the number of cycles and the billing date:
+This will ensure the transaction is passed to Payfast as a recurring transaction. The `subscription` method also takes a few options to customise the subscription. You can specify the frequency, the number of cycles and the billing date:
 
 ```php
 $transaction->subscription(
@@ -184,7 +184,7 @@ $transaction->subscription(
 );
 ```
 
-PayFast supports four frequency options:
+Payfast supports four frequency options:
 
 ```php
 $monthly = Transaction::SUBSCRIPTION_FREQUENCY_MONTHLY;  // default
@@ -205,7 +205,7 @@ if ($validator->validate(10000, 'passphrase', $request->ip()) {
 }
 ```
 
-### Fetching a subscription from PayFast
+### Fetching a subscription from Payfast
 
 You can fetch details for any subscription using the `Subscription` class. Pass a `Merchant` instance as the first parameter and the subscription token as the second to the constructor and call the `fetch` method:
 
@@ -234,7 +234,7 @@ $subscription->pause(2);
 $subscription->fetch()->runDate(); // Will skip the next two billing dates
 ```
 
-Note that PayFast does not allow you to alter the number of cycles paused here. You will need to `unpause` and then `pause` again with the new cycles.
+Note that Payfast does not allow you to alter the number of cycles paused here. You will need to `unpause` and then `pause` again with the new cycles.
 
 To unpause a subscription, simply call the `unpause()` method:
 
@@ -258,19 +258,19 @@ $subscription->cancel();
 $subscription->cancelled();  // true
 ```
 
-PayFast retains the information about cancelled transaction, so even if you fetched data from a transaction that had been previously cancelled, you'll still get that transaction data, but `cancelled()` will return `true`.
+Payfast retains the information about cancelled transaction, so even if you fetched data from a transaction that had been previously cancelled, you'll still get that transaction data, but `cancelled()` will return `true`.
 
 ## Sandbox
 
-PayFast provides a simple sandbox against which transactions can be tested. The sandbox can be found at [https://sandbox.payfast.co.za](https://sandbox.payfast.co.za). In order to use the sandbox, you'll need to tell the library that you're testing. You can do so by calling the `testing()` method on the `Payfast` instance when creating a form:
+Payfast provides a simple sandbox against which transactions can be tested. The sandbox can be found at [https://sandbox.payfast.co.za](https://sandbox.payfast.co.za). In order to use the sandbox, you'll need to tell the library that you're testing. You can do so by calling the `testing()` method on the `Payfast` instance when creating a form:
 
 ```php
-$payfast = new PayFast($transaction);
+$payfast = new Payfast($transaction);
 
 $form = $payfast->testing()->form();
 ```
 
-This will ensure that requests are sent to the sandbox and not the actual PayFast endpoint. The same is true for the `ItnValidator`:
+This will ensure that requests are sent to the sandbox and not the actual Payfast endpoint. The same is true for the `ItnValidator`:
 
 ```php
 $validator = new ItnValidator($request->input());

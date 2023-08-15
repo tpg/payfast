@@ -13,13 +13,12 @@ class Request
 {
     protected const ENDPOINT = 'https://api.payfast.co.za';
 
-    protected Client $client;
-    protected Merchant $merchant;
+    protected readonly Client $client;
+    protected readonly Merchant $merchant;
     protected bool $testing = false;
 
-    public function __construct(Merchant $merchant, Client $client = null)
+    public function __construct(Merchant $merchant, ?Client $client = null)
     {
-        $this->merchant = $merchant;
         $this->client = $client ?? new Client();
     }
 
@@ -75,7 +74,7 @@ class Request
     protected function headers(array $body = []): array
     {
         $headers = [
-            'merchant-id' => $this->merchant->merchantId(),
+            'merchant-id' => $this->merchant->merchantId,
             'version' => 'v1',
             'timestamp' => (new \DateTime())->format(DATE_ATOM),
         ];

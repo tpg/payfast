@@ -9,7 +9,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use TPG\PayFast\Customer;
 use TPG\PayFast\Merchant;
-use TPG\PayFast\PaymentMethod;
+use TPG\PayFast\Enums\PaymentMethod;
 use TPG\PayFast\Subscription;
 use TPG\PayFast\Transaction;
 

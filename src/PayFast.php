@@ -9,14 +9,12 @@ use Psr\Http\Client\ClientInterface;
 
 class PayFast
 {
-    protected Transaction $transaction;
     protected bool $testing = false;
     protected string $passphrase;
 
-    public function __construct(Transaction $transaction)
+    public function __construct(protected Transaction $transaction)
     {
-        $this->transaction = $transaction;
-        $this->passphrase = $transaction->merchant()->passphrase();
+        $this->passphrase = $transaction->merchant()->passphrase;
     }
 
     public function testing(bool $testing = true): self

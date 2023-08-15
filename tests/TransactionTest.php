@@ -7,7 +7,7 @@ namespace TPG\PayFast\Tests;
 use TPG\PayFast\Customer;
 use TPG\PayFast\Merchant;
 use TPG\PayFast\PayFast;
-use TPG\PayFast\PaymentMethod;
+use TPG\PayFast\Enums\PaymentMethod;
 use TPG\PayFast\Transaction;
 
 class TransactionTest extends TestCase

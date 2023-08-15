@@ -7,77 +7,68 @@ namespace TPG\PayFast;
 use DateTime;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
+use TPG\PayFast\Enums\PaymentStatus;
 use TPG\PayFast\Exceptions\ValidationException;
 
-class PayFastResponse
+readonly class PayFastResponse
 {
-    protected array $data;
-
     protected Customer $customer;
-    protected Transaction $transaction;
-    protected array $customIntegers = [];
-    protected array $customStrings = [];
+    protected ?array $customIntegers;
+    protected ?array $customStrings;
+    public ?string $merchantPaymentId;
+    public int $payfastPaymentId;
+    public ?PaymentStatus $paymentStatus;
+    public string $itemName;
+    public ?string $itemDescription;
+    public int $amountGross;
+    public int $amountFee;
+    public int $amountNet;
+    public int $merchantId;
+    public string $token;
+    public ?Carbon $billingDate;
+    public ?string $signature;
 
-    public function __construct(array $data)
+    public function __construct(public array $data)
     {
-        $this->data = $data;
+        $this->customer = (new Customer(
+            firstName: $data['name_first'] ?? null,
+            lastName: $data['name_last'] ?? null,
+            email: $data['email_address'] ?? null,
+            cell: $data['cell_number'] ?? null,
+        ));
 
-        $this->customIntegers = $this->getCustomValues('custom_int');
-        $this->customStrings = $this->getCustomValues('custom_str');
-
-        $this->customer = (new Customer())
-            ->setName($data['name_first'] ?? null, $data['name_last'] ?? null)
-            ->setEmail($data['email_address'] ?? null)
-            ->setCellNumber($data['cell_number'] ?? null);
-
+        $this->merchantPaymentId = Arr::get($data, 'm_payment_id');
+        $this->payfastPaymentId = Arr::get($data, 'pf_payment_id');
+        $this->paymentStatus = PaymentStatus::tryFrom(Arr::get($data, 'payment_status'));
+        $this->itemName = Arr::get($data, 'item_name');
+        $this->itemDescription = Arr::get($data, 'item_description');
+        $this->amountGross = $this->money('amount_gross');
+        $this->amountFee = $this->money('amount_fee');
+        $this->amountNet = $this->money('amount_net');
+        $this->customIntegers = $this->customValues('custom_int');
+        $this->customStrings = $this->customValues('custom_str');
+        $this->merchantId = Arr::get($data, 'merchant_id');
+        $this->token = Arr::get($data, 'token');
+        $this->billingDate = $this->date('billing_date');
+        $this->signature = Arr::get($data, 'signature');
     }
 
-    public function merchantPaymentId(): ?string
+    protected function money(string $key): int
     {
-        return Arr::get($this->data, 'm_payment_id');
+        return (int)str_replace('.', '', (string)$this->data[$key]);
     }
 
-    public function payFastPaymentId(): string
+    protected function date(string $key): ?Carbon
     {
-        return $this->data['pf_payment_id'];
+        $data = Arr::get($this->data, $key);
+        if (! $data) {
+            return null;
+        }
+
+        return Carbon::createFromFormat('Y-m-d', $data);
     }
 
-    public function name(): string
-    {
-        return $this->data['item_name'];
-    }
-
-    public function description(): ?string
-    {
-        return Arr::get($this->data, 'item_description');
-    }
-
-    public function amountGross(): int
-    {
-        return (int)str_replace('.', '', (string)$this->data['amount_gross']);
-    }
-
-    public function amountFee(): int
-    {
-        return (int)str_replace('.', '', (string)$this->data['amount_fee']);
-    }
-
-    public function amountNet(): int
-    {
-        return (int)str_replace('.', '', (string)$this->data['amount_net']);
-    }
-
-    public function customIntegers(): array
-    {
-        return $this->getCustomValues('custom_int');
-    }
-
-    public function customStrings(): array
-    {
-        return $this->getCustomValues('custom_str');
-    }
-
-    protected function getCustomValues(string $prefix): array
+    protected function customValues(string $prefix): array
     {
         $integers = [];
 
@@ -85,40 +76,6 @@ class PayFastResponse
             $integers[] = $data[$prefix.$i] ?? null;
         }
 
-        return array_filter($integers, fn ($value) => ! empty($value));
-    }
-
-    public function customer(): Customer
-    {
-        return (new Customer())
-            ->setName($this->data['name_first'] ?? null, $this->data['name_last'] ?? null)
-            ->setEmail($this->data['email_address'] ?? null)
-            ->setCellNumber($this->data['cell_number'] ?? null);
-    }
-
-    public function signature(): string
-    {
-        return $this->data['signature'];
-    }
-
-    public function token(): ?string
-    {
-        return Arr::get($this->data, 'token');
-    }
-
-    public function paymentStatus(): string
-    {
-        return $this->data['payment_status'];
-    }
-
-    public function billingDate(): ?DateTime
-    {
-        $date = Arr::get($this->data, 'billing_date');
-
-        if (! $date) {
-            return null;
-        }
-
-        return DateTime::createFromFormat('Y-m-d', $date);
+        return array_filter($integers, static fn ($value) => ! empty($value));
     }
 }

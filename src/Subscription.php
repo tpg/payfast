@@ -7,15 +7,12 @@ namespace TPG\PayFast;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
+use TPG\PayFast\Enums\SubscriptionStatus;
 use TPG\PayFast\Exceptions\PayFastException;
 
 class Subscription
 {
     protected const ENDPOINT = 'https://api.payfast.co.za/subscriptions';
-
-    protected const STATUS_ACTIVE = 1;
-    protected const STATUS_CANCELLED = 2;
-    protected const STATUS_PAUSED = 3;
 
     protected Merchant $merchant;
     protected string $token;
@@ -100,10 +97,10 @@ class Subscription
     protected function setData(array $data): void
     {
         $this->data = $data;
-        if (Arr::get($data, 'status') === self::STATUS_CANCELLED) {
+        if (Arr::get($data, 'status') === SubscriptionStatus::Cancelled->value) {
             $this->cancelled = true;
         }
-        if (Arr::get($data, 'status') === self::STATUS_PAUSED) {
+        if (Arr::get($data, 'status') === SubscriptionStatus::Paused->value) {
             $this->paused = true;
         }
     }

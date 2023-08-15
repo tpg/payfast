@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace TPG\PayFast;
 
+use TPG\PayFast\Enums\SubscriptionFrequency;
+
 class Transaction
 {
-    public const SUBSCRIPTION_FREQUENCY_MONTHLY = 3;
-    public const SUBSCRIPTION_FREQUENCY_QUARTERLY = 4;
-    public const SUBSCRIPTION_FREQUENCY_BIANNUALLY = 5;
-    public const SUBSCRIPTION_FREQUENCY_ANNUALLY = 6;
-
     protected bool $subscription = false;
     protected ?\DateTime $billingDate = null;
     protected int $amount;
     protected int $recurringAmount;
-    protected int $frequency = self::SUBSCRIPTION_FREQUENCY_MONTHLY;
+    protected SubscriptionFrequency $frequency = SubscriptionFrequency::Monthly;
     protected int $cycles = 0;
     protected string $name;
     protected ?Customer $customer = null;
@@ -35,7 +32,11 @@ class Transaction
         $this->name = $name;
     }
 
-    public function subscription(int $frequency = 3, int $cycles = 0, ?\DateTime $billingDate = null): self
+    public function subscription(
+        SubscriptionFrequency $frequency = SubscriptionFrequency::Monthly,
+        int $cycles = 0,
+        ?\DateTime $billingDate = null
+    ): self
     {
         $this->frequency = $frequency;
         $this->cycles = $cycles;

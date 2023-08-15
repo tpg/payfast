@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.4",
         "illuminate/collections": "^9.0|^10.0"

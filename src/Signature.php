@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace TPG\PayFast;
 
-class Signature
+readonly class Signature
 {
-    protected array $attributes;
-    protected ?string $passphrase;
-
-    public function __construct(array $attributes, ?string $passphrase = null)
+    public function __construct(protected array $attributes, protected ?string $passphrase = null)
     {
-        $this->attributes = $attributes;
-        $this->passphrase = $passphrase;
     }
 
     public function generate(bool $sort = false): string

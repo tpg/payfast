@@ -8,8 +8,6 @@ class Attributes
 {
     public function prep(array $data): array
     {
-        $data = array_filter($data, static fn ($value) => ! is_null($value));
-
-        return $data;
+        return array_filter($data, static fn ($value) => ! is_null($value));
     }
 }
