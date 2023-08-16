@@ -4,146 +4,110 @@ declare(strict_types=1);
 
 namespace TPG\PayFast;
 
-use TPG\PayFast\Enums\SubscriptionFrequency;
+use TPG\PayFast\Enums\PaymentMethod;
 
 class Transaction
 {
-    protected bool $subscription = false;
-    protected ?\DateTime $billingDate = null;
-    protected int $amount;
-    protected int $recurringAmount;
-    protected SubscriptionFrequency $frequency = SubscriptionFrequency::Monthly;
-    protected int $cycles = 0;
-    protected string $name;
-    protected ?Customer $customer = null;
-    protected Merchant $merchant;
-    protected ?string $merchantPaymentId = null;
-    protected ?string $description = null;
-    protected array $customIntegers = [];
-    protected array $customStrings = [];
-    protected bool $emailConfirmation = false;
-    protected ?string $emailConfirmationAddress = null;
-    protected ?string $paymentMethod = null;
+    public readonly Customer $customer;
+    public readonly ?string $returnUrl;
+    public readonly ?string $cancelUrl;
+    public readonly ?string $notifyUrl;
+    public readonly ?array $customIntegers;
+    public readonly ?array $customStrings;
+    public readonly ?PaymentMethod $paymentMethod;
+    public readonly ?Subscription $subscription;
+    public readonly ?string $confirmationEmail;
+    public readonly ?Split $split;
 
-    public function __construct(Merchant $merchant, int $amount, string $name)
-    {
-        $this->merchant = $merchant;
-        $this->recurringAmount = $this->amount = $amount;
-        $this->name = $name;
+    public function __construct(
+        readonly public string $name,
+        readonly public int $amount,
+        readonly public ?string $description = null,
+        readonly public ?string $merchantPaymentId = null,
+    ) {
     }
 
-    public function subscription(
-        SubscriptionFrequency $frequency = SubscriptionFrequency::Monthly,
-        int $cycles = 0,
-        ?\DateTime $billingDate = null
-    ): self
-    {
-        $this->frequency = $frequency;
-        $this->cycles = $cycles;
-        $this->subscription = true;
-        $this->billingDate = $billingDate ?? new \DateTime();
-
-        return $this;
-    }
-
-    public function amount(): int
-    {
-        return $this->amount;
-    }
-
-    public function setRecurringAmount(int $amount): self
-    {
-        $this->recurringAmount = $amount;
-        return $this;
-    }
-
-    public function setCustomer(Customer $customer): self
+    public function for(Customer $customer): self
     {
         $this->customer = $customer;
+
         return $this;
     }
 
-    public function setMerchantPaymentId(string $merchantPaymentId): self
+    public function withUrls(string $return = null, string $cancel = null, string $notify = null): self
     {
-        $this->merchantPaymentId = $merchantPaymentId;
+        $this->returnUrl = $return;
+        $this->cancelUrl = $cancel;
+        $this->notifyUrl = $notify;
+
         return $this;
     }
 
-    public function setDescription(string $description): self
+    public function withIntegers(array $integers): self
     {
-        $this->description = $description;
+        $this->customIntegers = $integers;
+
         return $this;
     }
 
-    public function setCustomIntegers(array $customIntegers = []): self
+    public function withStrings(array $strings): self
     {
-        $this->customIntegers = $customIntegers;
+        $this->customStrings = $strings;
+
         return $this;
     }
 
-    public function setCustomStrings(array $customStrings = []): self
-    {
-        $this->customStrings = $customStrings;
-        return $this;
-    }
-
-    public function setEmailConfirmation(bool $emailConfirmation = true): self
-    {
-        $this->emailConfirmation = $emailConfirmation;
-        return $this;
-    }
-
-    public function setEmailConfirmationAddress(string $emailAddress): self
-    {
-        $this->emailConfirmationAddress = $emailAddress;
-        return $this;
-    }
-
-    public function setPaymentMethod(string $paymentMethod): self
+    public function allowPaymentMethod(PaymentMethod $paymentMethod): self
     {
         $this->paymentMethod = $paymentMethod;
+
         return $this;
     }
 
-    public function merchant(): Merchant
+    public function subscription(Subscription $subscription): self
     {
-        return $this->merchant;
+        $this->subscription = $subscription;
+
+        return $this;
     }
 
-    public function attributes(): array
+    public function confirm(string $email): self
     {
-        return (new Attributes())->prep(array_merge(
-            $this->merchant->attributes(),
-            $this->customer ? $this->customer->attributes() : [],
-            [
-                'm_payment_id' => $this->merchantPaymentId,
-                'amount' => $this->getDecimalAmount($this->amount),
-                'item_name' => $this->name,
-                'item_description' => $this->description,
-            ],
-            $this->getCustomAttributes($this->customIntegers, 'custom_int'),
-            $this->getCustomAttributes($this->customStrings, 'custom_str'),
-            [
-                'email_confirmation' => $this->emailConfirmation ? 1 : null,
-                'confirmation_address' => $this->emailConfirmationAddress,
-                'payment_method' => $this->paymentMethod,
-            ],
-            $this->subscription ? [
-                'subscription_type' => 1,
-                'billing_date' => $this->billingDate->format('Y-m-d'),
-                'recurring_amount' => $this->getDecimalAmount($this->recurringAmount),
-                'frequency' => $this->frequency,
-                'cycles' => $this->cycles,
-            ] : [],
-        ));
+        $this->confirmationEmail = $email;
+
+        return $this;
     }
 
-    protected function getDecimalAmount(int $amount): string
+    public function splitWith(Split $split): self
     {
-        return number_format($amount / 100, 2, '.', '');
+        $this->split = $split;
+
+        return $this;
     }
 
-    protected function getCustomAttributes(array $custom, string $keyPrefix): array
+    public function toArray(): array
+    {
+        return (new Attributes())->prep([
+            ...$this->merchant->toArray(),
+            'return_url' => $this->returnUrl,
+            'cancel_url' => $this->cancelUrl,
+            'notify_url' => $this->notifyUrl,
+            ...$this->customer?->toArray() ?? [],
+            'm_payment_id' => $this->merchantPaymentId,
+            'amount' => (new Money($this->amount))->format(),
+            'item_name' => $this->name,
+            'item_description' => $this->description,
+            ...$this->customAttributes($this->customIntegers, 'custom_int'),
+            ...$this->customAttributes($this->customStrings, 'custom_str'),
+            'email_confirmation' => $this->confirmationEmail ? 1 : null,
+            'confirmation_address' => $this->confirmationEmail,
+            'payment_method' => $this->paymentMethod,
+            ...$this->subscription?->toArray(),
+            ...$this->setup(),
+        ]);
+    }
+
+    protected function customAttributes(array $custom, string $keyPrefix): array
     {
         $values = [];
 
@@ -152,5 +116,12 @@ class Transaction
         }
 
         return array_filter($values, static fn ($value) => ! empty($value));
+    }
+
+    protected function setup(): array
+    {
+        return (new Attributes())->prep([
+            'setup' => $this->split?->toArray(),
+        ]);
     }
 }

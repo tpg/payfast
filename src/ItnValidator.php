@@ -9,44 +9,25 @@ use TPG\PayFast\Exceptions\ValidationException;
 
 class ItnValidator
 {
-    protected array $data;
-    protected PayFastResponse $response;
-    protected bool $testing = false;
+    public readonly PayFastResponse $response;
+
     protected ?string $error = null;
 
-    public function __construct(array $responseData)
+    public function __construct(public readonly array $data, protected bool $testing = false)
     {
-        $this->data = $responseData;
-
-        $this->response = new PayFastResponse($responseData);
+        $this->response = PayFastResponse::createFromResponse($data);
+        $this->flush();
     }
 
-    /**
-     * @deprecated Version 1 will flush on ItnValidator construction. Won't need to call this at all.
-     */
-    public function flush(): self
+    protected function flush(): void
     {
         header('HTTP/1.0 200 OK');
         flush();
-
-        return $this;
-    }
-
-    public function testing(bool $testing = true): self
-    {
-        $this->testing = $testing;
-
-        return $this;
-    }
-
-    public function response(): PayFastResponse
-    {
-        return $this->response;
     }
 
     public function validate(int $amount, string $passphrase, string $referer): bool
     {
-        $paramString = $this->getParamString($passphrase);
+        $paramString = $this->paramString($passphrase);
 
         try {
             $this->validateSignature($paramString);
@@ -55,18 +36,14 @@ class ItnValidator
             $this->confirm($paramString, $this->testing);
         } catch (ValidationException $e) {
             $this->error = $e->getMessage();
+
             return false;
         }
 
         return true;
     }
 
-    public function token(): ?string
-    {
-        return $this->response->token();
-    }
-
-    public function getParamString(string $passphrase): string
+    public function paramString(string $passphrase): string
     {
         $data = $this->data;
 
@@ -86,7 +63,7 @@ class ItnValidator
     {
         $signature = md5($params);
 
-        if ($signature !== $this->response->signature()) {
+        if ($signature !== $this->response->signature) {
             throw new ValidationException('Generated signature does not match response signature.');
         }
 
@@ -97,7 +74,7 @@ class ItnValidator
     {
         $ips = $this->getValidIps();
 
-        if (!in_array($referer, $ips, true)) {
+        if (! in_array($referer, $ips, true)) {
             throw new ValidationException('Response is not from a valid PayFast IP address.');
         }
 
@@ -116,10 +93,10 @@ class ItnValidator
         $ips = [];
 
         foreach ($validHosts as $host) {
-            $ip = gethostbynamel($host);
+            $hostIp = gethostbynamel($host);
 
-            if ($ip !== null) {
-                $ips = [...$ips, ...$ip, '127.0.0.1'];
+            if ($hostIp) {
+                $ips = [...$ips, ...$hostIp, '127.0.0.1'];
             }
         }
 
@@ -128,7 +105,7 @@ class ItnValidator
 
     protected function validateAmount(int $total): bool
     {
-        if (str_replace('.', '', (string)$this->response->amountGross()) !== (string)$total) {
+        if (str_replace('.', '', (string) $this->response->amountGross) !== (string) $total) {
             throw new ValidationException('The transaction amount does not match the gross amount.');
         }
 
@@ -140,8 +117,8 @@ class ItnValidator
         try {
             $client = new Client();
 
-            $response = $client->post($this->getHost($testing).'/eng/query/validate', [
-                'query' => $params
+            $response = $client->post($this->payfastHost($testing).'/eng/query/validate', [
+                'query' => $params,
             ]);
 
             if ($response->getStatusCode() !== 200) {
@@ -156,12 +133,12 @@ class ItnValidator
         return true;
     }
 
-    protected function getHost(bool $testing = false): string
+    protected function payfastHost(bool $testing = false): string
     {
         return implode('', [
             'https://',
             $testing ? 'sandbox.' : 'www.',
-            'payfast.co.za'
+            'payfast.co.za',
         ]);
     }
 

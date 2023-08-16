@@ -6,11 +6,14 @@ namespace TPG\PayFast\Enums;
 
 enum PaymentMethod: string
 {
-    case All = 'all';
     case EFT = 'eft';
-    case CC = 'cc';
-    case DC = 'dc';
-    case MP = 'mp';
-    case MC = 'mc';
-    case SC = 'sc';
+    case CreditCard = 'cc';
+    case DebitCard = 'dc';
+    case MasterPass = 'mp';
+    case MobiCred = 'mc';
+    case SCode = 'sc';
+    case SnapScan = 'ss';
+    case Zapper = 'zp';
+    case MoreTyme = 'mt';
+    case StoreCard = 'rcs';
 }

@@ -22,7 +22,7 @@ readonly class Signature
         $attributes['passphrase'] = $this->passphrase;
 
         array_walk($attributes, static function (&$value, $key) {
-            $value = $key.'='.urlencode(trim((string)$value));
+            $value = $key.'='.urlencode(trim((string) $value));
         });
 
         if ($sort) {

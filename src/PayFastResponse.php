@@ -5,57 +5,52 @@ declare(strict_types=1);
 namespace TPG\PayFast;
 
 use DateTime;
-use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use TPG\PayFast\Enums\PaymentStatus;
-use TPG\PayFast\Exceptions\ValidationException;
 
 readonly class PayFastResponse
 {
-    protected Customer $customer;
-    protected ?array $customIntegers;
-    protected ?array $customStrings;
-    public ?string $merchantPaymentId;
-    public int $payfastPaymentId;
-    public ?PaymentStatus $paymentStatus;
-    public string $itemName;
-    public ?string $itemDescription;
-    public int $amountGross;
-    public int $amountFee;
-    public int $amountNet;
-    public int $merchantId;
-    public string $token;
-    public ?Carbon $billingDate;
-    public ?string $signature;
+    public function __construct(
+        public string $payfastPaymentId,
+        public PaymentStatus $paymentStatus,
+        public string $itemName,
+        public int $merchantId,
+        public string $token,
+        public ?string $merchantPaymentId = null,
+        public ?string $itemDescription = null,
+        public ?int $amountGross = null,
+        public ?int $amountFee = null,
+        public ?int $amountNet = null,
+        public array $customIntegers = [],
+        public array $customStrings = [],
+        public ?Customer $customer = null,
+        public ?DateTime $billingDate = null,
+        public ?string $signature = null,
+    ) {
+    }
 
-    public function __construct(public array $data)
+    public static function createFromResponse(array $data): self
     {
-        $this->customer = (new Customer(
-            firstName: $data['name_first'] ?? null,
-            lastName: $data['name_last'] ?? null,
-            email: $data['email_address'] ?? null,
-            cell: $data['cell_number'] ?? null,
-        ));
-
-        $this->merchantPaymentId = Arr::get($data, 'm_payment_id');
-        $this->payfastPaymentId = Arr::get($data, 'pf_payment_id');
-        $this->paymentStatus = PaymentStatus::tryFrom(Arr::get($data, 'payment_status'));
-        $this->itemName = Arr::get($data, 'item_name');
-        $this->itemDescription = Arr::get($data, 'item_description');
-        $this->amountGross = $this->money('amount_gross');
-        $this->amountFee = $this->money('amount_fee');
-        $this->amountNet = $this->money('amount_net');
-        $this->customIntegers = $this->customValues('custom_int');
-        $this->customStrings = $this->customValues('custom_str');
-        $this->merchantId = Arr::get($data, 'merchant_id');
-        $this->token = Arr::get($data, 'token');
-        $this->billingDate = $this->date('billing_date');
-        $this->signature = Arr::get($data, 'signature');
+        return new self(
+            payfastPaymentId: Arr::get($data, 'pf_payment_id'),
+            paymentStatus: PaymentStatus::tryFrom(Arr::get($data, 'payment_status')),
+            itemName: Arr::get($data, 'item_name'),
+            merchantId: (int) Arr::get($data, 'merchant_id'),
+            token: Arr::get($data, 'token'),
+            merchantPaymentId: Arr::get($data, 'm_payment_id'),
+            itemDescription: Arr::get($data, 'item_description'),
+            amountGross: (new Money(Arr::get($data, 'amount_gross')))->value,
+            amountFee: (new Money(Arr::get($data, 'amount_fee')))->value,
+            amountNet: (new Money(Arr::get($data, 'amount_net')))->value,
+            customIntegers: self::customValues('custom_int'),
+            customStrings: self::customValues('custom_str'),
+            customer: self::customer($data),
+        );
     }
 
     protected function money(string $key): int
     {
-        return (int)str_replace('.', '', (string)$this->data[$key]);
+        return (int) str_replace('.', '', (string) $this->data[$key]);
     }
 
     protected function date(string $key): ?Carbon
@@ -68,7 +63,7 @@ readonly class PayFastResponse
         return Carbon::createFromFormat('Y-m-d', $data);
     }
 
-    protected function customValues(string $prefix): array
+    protected static function customValues(string $prefix): array
     {
         $integers = [];
 
@@ -77,5 +72,18 @@ readonly class PayFastResponse
         }
 
         return array_filter($integers, static fn ($value) => ! empty($value));
+    }
+
+    protected static function customer(array $data): ?Customer
+    {
+        $firstName = Arr::get($data, 'name_first');
+        $lastName = Arr::get($data, 'name_last');
+        $email = Arr::get($data, 'email_address');
+
+        if (! $firstName && ! $lastName && ! $email) {
+            return null;
+        }
+
+        return new Customer($firstName, $lastName, $email);
     }
 }

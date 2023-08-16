@@ -6,5 +6,4 @@ namespace TPG\PayFast\Exceptions;
 
 class ValidationException extends \Exception
 {
-
 }

@@ -7,6 +7,7 @@ namespace TPG\PayFast;
 readonly class FormBuilder
 {
     public function __construct(
+        protected string $id,
         protected Transaction $transaction,
         protected string $signature,
         protected string $host,
@@ -17,7 +18,7 @@ readonly class FormBuilder
     public function build(): string
     {
         $form = implode("\n", [
-            '<form method="post" action="'.$this->host.'" id="payfast_form">',
+            '<form method="post" action="'.$this->host.'" id="'.$this->id.'">',
             ...$this->formAttributes(),
             '</form>',
         ]);
@@ -60,7 +61,7 @@ readonly class FormBuilder
     {
         return (new Attributes())->prep(
             array_merge(
-                $this->transaction->attributes(),
+                $this->transaction->toArray(),
                 [
                     'signature' => $this->signature,
                 ]

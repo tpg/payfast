@@ -7,16 +7,14 @@ namespace TPG\PayFast;
 readonly class Customer
 {
     public function __construct(
-        public ?string $firstName,
-        public ?string $lastName,
-        public ?string $email,
-        public ?string $cell
-    )
-    {
+        public ?string $firstName = null,
+        public ?string $lastName = null,
+        public ?string $email = null,
+        public ?string $cell = null
+    ) {
     }
 
-
-    public function attributes(): array
+    public function toArray(): array
     {
         return (new Attributes())->prep([
             'name_first' => $this->firstName,

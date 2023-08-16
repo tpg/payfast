@@ -6,7 +6,6 @@ namespace TPG\PayFast;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use http\Encoding\Stream;
 use TPG\PayFast\Exceptions\PayFastException;
 
 class Request
@@ -14,10 +13,12 @@ class Request
     protected const ENDPOINT = 'https://api.payfast.co.za';
 
     protected readonly Client $client;
+
     protected readonly Merchant $merchant;
+
     protected bool $testing = false;
 
-    public function __construct(Merchant $merchant, ?Client $client = null)
+    public function __construct(Merchant $merchant, Client $client = null)
     {
         $this->client = $client ?? new Client();
     }
@@ -38,7 +39,7 @@ class Request
                 'json' => $formParams ?: null,
                 'query' => [
                     ...$this->testing ? ['testing' => 'true'] : [],
-                ]
+                ],
             ];
 
             $response = $this->client->request($method, $this->endpoint($uri), $data);
@@ -52,11 +53,9 @@ class Request
         } catch (ClientException $exception) {
 
             throw new PayFastException($exception->getMessage(), $exception->getCode());
-
         } catch (\JsonException $exception) {
 
             throw new PayFastException('Invalid JSON response');
-
         }
     }
 
