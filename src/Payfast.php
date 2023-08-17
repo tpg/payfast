@@ -26,7 +26,7 @@ class Payfast
     {
         $signature = (new Signature(
             $this->transaction->toArray(),
-            $this->transaction->merchant->passphrase)
+            $this->merchant->passphrase)
         )->generate();
 
         return (new FormBuilder(
@@ -36,6 +36,14 @@ class Payfast
             $this->getHost($this->testing),
             $submitTimeout
         ))->build();
+    }
+
+    public function validate(array $data, int $amount, string $passphrase, string $referer, bool $testing = false): ItnValidator
+    {
+        $validator = new ItnValidator($data, $testing);
+        $validator->validate($amount, $passphrase, $referer);
+
+        return $validator;
     }
 
     protected function getHost(bool $testing): string

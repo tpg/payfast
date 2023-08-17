@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TPG\PayFast;
 
 use GuzzleHttp\Client;
+use TPG\PayFast\Enums\PaymentStatus;
 use TPG\PayFast\Exceptions\ValidationException;
 
 class ItnValidator
@@ -12,6 +13,8 @@ class ItnValidator
     public readonly PayFastResponse $response;
 
     protected ?string $error = null;
+
+    public readonly ?bool $success;
 
     public function __construct(public readonly array $data, protected bool $testing = false)
     {
@@ -37,10 +40,10 @@ class ItnValidator
         } catch (ValidationException $e) {
             $this->error = $e->getMessage();
 
-            return false;
+            return $this->success = false;
         }
 
-        return true;
+        return $this->success = true;
     }
 
     public function paramString(string $passphrase): string
@@ -64,7 +67,9 @@ class ItnValidator
         $signature = md5($params);
 
         if ($signature !== $this->response->signature) {
-            throw new ValidationException('Generated signature does not match response signature.');
+            $this->success = false;
+            $this->error = 'Invalid signature';
+            return false;
         }
 
         return true;
@@ -75,7 +80,9 @@ class ItnValidator
         $ips = $this->getValidIps();
 
         if (! in_array($referer, $ips, true)) {
-            throw new ValidationException('Response is not from a valid PayFast IP address.');
+            $this->success = false;
+            $this->error = 'Invalid host';
+            return false;
         }
 
         return true;
@@ -105,8 +112,10 @@ class ItnValidator
 
     protected function validateAmount(int $total): bool
     {
-        if (str_replace('.', '', (string) $this->response->amountGross) !== (string) $total) {
-            throw new ValidationException('The transaction amount does not match the gross amount.');
+        if (str_replace('.', '', (string) $this->response->gross) !== (string) $total) {
+            $this->success = false;
+            $this->error = 'Invalid amount.';
+            return false;
         }
 
         return true;
@@ -122,12 +131,17 @@ class ItnValidator
             ]);
 
             if ($response->getStatusCode() !== 200) {
-                throw new ValidationException('Unable to confirm order details with PayFast. PayFast Status code '.$response->getStatusCode());
+                $this->success = false;
+                $this->error = 'Unable to confirm. Status '.$response->getStatusCode();
+                return false;
             }
 
-        } catch (\Exception $e) {
+            $this->success = true;
 
-            throw new ValidationException('Unable to confirm order details with PayFast. Exception ', $e->getCode(), $e);
+        } catch (\Throwable $e) {
+            $this->success = false;
+            $this->error = $e->getMessage();
+            return false;
         }
 
         return true;
