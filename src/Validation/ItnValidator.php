@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Validation;
 
 use GuzzleHttp\Client;
-use TPG\PayFast\Enums\PaymentStatus;
 use TPG\PayFast\Exceptions\ValidationException;
+use TPG\PayFast\Response\PayFastResponse;
 
 class ItnValidator
 {
@@ -69,6 +69,7 @@ class ItnValidator
         if ($signature !== $this->response->signature) {
             $this->success = false;
             $this->error = 'Invalid signature';
+
             return false;
         }
 
@@ -82,6 +83,7 @@ class ItnValidator
         if (! in_array($referer, $ips, true)) {
             $this->success = false;
             $this->error = 'Invalid host';
+
             return false;
         }
 
@@ -115,6 +117,7 @@ class ItnValidator
         if (str_replace('.', '', (string) $this->response->gross) !== (string) $total) {
             $this->success = false;
             $this->error = 'Invalid amount.';
+
             return false;
         }
 
@@ -133,6 +136,7 @@ class ItnValidator
             if ($response->getStatusCode() !== 200) {
                 $this->success = false;
                 $this->error = 'Unable to confirm. Status '.$response->getStatusCode();
+
                 return false;
             }
 
@@ -141,6 +145,7 @@ class ItnValidator
         } catch (\Throwable $e) {
             $this->success = false;
             $this->error = $e->getMessage();
+
             return false;
         }
 

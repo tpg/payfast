@@ -13,7 +13,8 @@
         "php": ">=8.2",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.5",
-        "illuminate/collections": "^10.0"
+        "illuminate/collections": "^10.0",
+        "vlucas/valitron": "^1.4"
     },
     "require-dev": {
         "laravel/pint": "^1.11",

@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Customer;
+
+use TPG\PayFast\Attributes;
+use TPG\PayFast\Exceptions\ValidationException;
 
 readonly class Customer
 {
@@ -12,6 +15,15 @@ readonly class Customer
         public ?string $email = null,
         public ?string $cell = null
     ) {
+        $this->validate();
+    }
+
+    protected function validate(): void
+    {
+        if ($messages = (new CustomerValidator($this))->validate()) {
+            $message = $messages[array_key_first($messages)][0];
+            throw new ValidationException($message);
+        }
     }
 
     public function toArray(): array

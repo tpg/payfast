@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Subscription;
 
+use TPG\PayFast\Attributes;
 use TPG\PayFast\Enums\SubscriptionFrequency;
 use TPG\PayFast\Enums\SubscriptionType;
+use TPG\PayFast\Money;
 
 readonly class Subscription
 {

@@ -10,6 +10,7 @@ readonly class Merchant
         public string $id,
         public string $secret,
         public string $passphrase,
+        public bool $testing = false,
     ) {
     }
 

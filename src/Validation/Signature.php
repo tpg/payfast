@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Validation;
 
 readonly class Signature
 {

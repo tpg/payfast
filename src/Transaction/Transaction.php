@@ -2,34 +2,64 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Transaction;
 
+use TPG\PayFast\Attributes;
+use TPG\PayFast\Customer\Customer;
 use TPG\PayFast\Enums\PaymentMethod;
+use TPG\PayFast\Transaction\FormBuilder;
+use TPG\PayFast\Merchant;
+use TPG\PayFast\Money;
+use TPG\PayFast\Transaction\Split;
+use TPG\PayFast\Subscription\Subscription;
+use TPG\PayFast\Validation\Signature;
 
 class Transaction
 {
-    public readonly Customer $customer;
-    public readonly ?string $returnUrl;
-    public readonly ?string $cancelUrl;
-    public readonly ?string $notifyUrl;
-    public readonly ?array $customIntegers;
-    public readonly ?array $customStrings;
-    public readonly ?PaymentMethod $paymentMethod;
-    public readonly ?Subscription $subscription;
-    public readonly ?string $confirmationEmail;
-    public readonly ?Split $split;
+    public ?Customer $customer = null;
+
+    public ?string $returnUrl = null;
+
+    public ?string $cancelUrl = null;
+
+    public ?string $notifyUrl = null;
+
+    /**
+     * @var array<int>
+     */
+    public array $customIntegers = [];
+
+    /**
+     * @var array<string>
+     */
+    public array $customStrings = [];
+
+    public ?PaymentMethod $paymentMethod = null;
+
+    public ?Subscription $subscription = null;
+
+    public ?string $confirmationEmail = null;
+
+    public ?Split $split = null;
 
     public function __construct(
-        readonly public string $name,
-        readonly public int $amount,
-        readonly public ?string $description = null,
-        readonly public ?string $merchantPaymentId = null,
+        readonly protected Merchant $merchant,
+        public string $name,
+        public int $amount,
+        public ?string $description = null,
+        public ?string $merchantPaymentId = null,
     ) {
     }
 
-    public function for(Customer $customer): self
-    {
-        $this->customer = $customer;
+    public function for(
+        Customer|string $customer,
+        string $lastName = null,
+        string $email = null,
+        string $cell = null
+    ): self {
+        $this->customer = $customer instanceof Customer
+            ? $customer
+            : new Customer($customer, $lastName, $email, $cell);
 
         return $this;
     }
@@ -102,8 +132,33 @@ class Transaction
             'email_confirmation' => $this->confirmationEmail ? 1 : null,
             'confirmation_address' => $this->confirmationEmail,
             'payment_method' => $this->paymentMethod,
-            ...$this->subscription?->toArray(),
+            ...$this->subscription?->toArray() ?? [],
             ...$this->setup(),
+        ]);
+    }
+
+    public function form(string $id = 'payfast', int $submitTimeout = null): string
+    {
+        $signature = (new Signature(
+            $this->toArray(),
+            $this->merchant->passphrase)
+        )->generate();
+
+        return (new FormBuilder(
+            $id,
+            $this,
+            $signature,
+            $this->getHost(),
+            $submitTimeout
+        ))->build();
+    }
+
+    protected function getHost(): string
+    {
+        return implode('', [
+            'https://',
+            $this->merchant->testing ? 'sandbox.' : 'www.',
+            'payfast.co.za/eng/process',
         ]);
     }
 

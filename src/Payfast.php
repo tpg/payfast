@@ -4,54 +4,38 @@ declare(strict_types=1);
 
 namespace TPG\PayFast;
 
-class Payfast
-{
-    protected readonly Transaction $transaction;
+use TPG\PayFast\Transaction\Transaction;
+use TPG\PayFast\Validation\ItnValidator;
 
-    public function __construct(protected readonly Merchant $merchant, protected readonly bool $testing = false)
+readonly class Payfast
+{
+    protected Transaction $transaction;
+
+    public function __construct(protected Merchant $merchant)
     {
     }
 
-    public static function merchant(string $id, string $key, string $passphrase, bool $testing = false): self
-    {
-        return new self(new Merchant($id, $key, $passphrase), $testing);
+    public static function merchant(
+        string|Merchant $id,
+        string $key = null,
+        string $passphrase = null,
+        bool $testing = false
+    ): self {
+        $merchant = $id instanceof Merchant ? $id : new Merchant($id, $key, $passphrase, $testing);
+
+        return new self($merchant);
     }
 
     public function createTransaction(string $name, int $amount, string $description = null, string $merchantPaymentId = null): Transaction
     {
-        return $this->transaction = new Transaction($name, $amount, $description, $merchantPaymentId);
+        return new Transaction($this->merchant, $name, $amount, $description, $merchantPaymentId);
     }
 
-    public function form(string $id = 'payfast', int $submitTimeout = null): string
+    public function validate(array $data, int $amount, string $referer): ItnValidator
     {
-        $signature = (new Signature(
-            $this->transaction->toArray(),
-            $this->merchant->passphrase)
-        )->generate();
-
-        return (new FormBuilder(
-            $id,
-            $this->transaction,
-            $signature,
-            $this->getHost($this->testing),
-            $submitTimeout
-        ))->build();
-    }
-
-    public function validate(array $data, int $amount, string $passphrase, string $referer, bool $testing = false): ItnValidator
-    {
-        $validator = new ItnValidator($data, $testing);
-        $validator->validate($amount, $passphrase, $referer);
+        $validator = new ItnValidator($data, $this->merchant->testing);
+        $validator->validate($amount, $this->merchant->passphrase, $referer);
 
         return $validator;
-    }
-
-    protected function getHost(bool $testing): string
-    {
-        return implode('', [
-            'https://',
-            $testing ? 'sandbox.' : 'www.',
-            'payfast.co.za/eng/process',
-        ]);
     }
 }

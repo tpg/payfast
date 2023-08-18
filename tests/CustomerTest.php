@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use TPG\PayFast\Customer;
+use TPG\PayFast\Customer\Customer;
+use TPG\PayFast\Exceptions\ValidationException;
 
 it('can create a new customer', function () {
     $customer = new Customer(
@@ -15,3 +16,9 @@ it('can create a new customer', function () {
     expect($customer)->toBeInstanceOf(Customer::class)
         ->and($customer->firstName)->toBe('Test');
 });
+
+it('will validate customer data', function () {
+
+    $customer = new Customer('first', 'last', 'bad-email');
+
+})->throws(ValidationException::class, 'not a valid email address');

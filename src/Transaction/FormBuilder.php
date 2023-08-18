@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Transaction;
+
+use TPG\PayFast\Attributes;
+use TPG\PayFast\Transaction\Transaction;
 
 readonly class FormBuilder
 {

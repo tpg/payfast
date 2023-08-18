@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PayFast\Transaction;
 
 readonly class Split
 {
