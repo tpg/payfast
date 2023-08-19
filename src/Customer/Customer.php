@@ -20,10 +20,7 @@ readonly class Customer
 
     protected function validate(): void
     {
-        if ($messages = (new CustomerValidator($this))->validate()) {
-            $message = $messages[array_key_first($messages)][0];
-            throw new ValidationException($message);
-        }
+        (new CustomerValidator)->validate($this->toArray());
     }
 
     public function toArray(): array

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TPG\PayFast;
 
 use TPG\PayFast\Transaction\Transaction;
-use TPG\PayFast\Validation\ItnValidator;
+use TPG\PayFast\Transaction\Itn;
 
 readonly class Payfast
 {
@@ -31,9 +31,9 @@ readonly class Payfast
         return new Transaction($this->merchant, $name, $amount, $description, $merchantPaymentId);
     }
 
-    public function validate(array $data, int $amount, string $referer): ItnValidator
+    public function validate(array $data, int $amount, string $referer): Itn
     {
-        $validator = new ItnValidator($data, $this->merchant->testing);
+        $validator = new Itn($data, $this->merchant->testing);
         $validator->validate($amount, $this->merchant->passphrase, $referer);
 
         return $validator;

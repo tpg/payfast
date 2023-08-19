@@ -11,7 +11,7 @@ $merchant = new \TPG\PayFast\Merchant('id', 'secret', 'passphrase');
 it('can create a new transaction object', function () use ($merchant) {
 
     $transaction = Payfast::merchant($merchant)
-        ->createTransaction('item name', 10000, 'item description', 'merchant payment id');
+        ->createTransaction('item name', 10000);
 
     expect($transaction)->toBeInstanceOf(Transaction::class);
 
@@ -22,7 +22,7 @@ it('can create a new transaction object', function () use ($merchant) {
 
 it('can have customer data attached', function () use ($merchant) {
     $transaction = Payfast::merchant($merchant)
-        ->createTransaction('name', 10000, 'description', 'id')
+        ->createTransaction('name', 10000)
         ->for('first name', 'last name', 'customer@email.test', '0821112222');
 
     expect($transaction->customer->firstName)->toBe('first name');
@@ -40,10 +40,32 @@ it('can have customer data attached', function () use ($merchant) {
 it('can can have custom data attached', function () use ($merchant) {
 
     $transaction = Payfast::merchant($merchant)
-        ->createTransaction('name', 10000, 'description', 'id')
+        ->createTransaction('name', 10000)
         ->withStrings(['s1', 's2', 's3'])
         ->withIntegers([1, 2, 3]);
 
     expect($transaction->customStrings)->toBe(['s1', 's2', 's3'])
         ->and($transaction->customIntegers)->toBe([1, 2, 3]);
 });
+
+it('can have return, cancel and notify urls', function () use ($merchant) {
+
+    $transaction = Payfast::merchant($merchant)
+        ->createTransaction('name', 10000)
+        ->withUrls('https://return.test', 'https://cancel.test', 'https://notify.test');
+
+    expect($transaction->returnUrl)->toBe('https://return.test')
+        ->and($transaction->cancelUrl)->toBe('https://cancel.test')
+        ->and($transaction->notifyUrl)->toBe('https://notify.test');
+
+});
+
+it('will validator URLs', function () use ($merchant) {
+
+    $transaction = Payfast::merchant($merchant)
+        ->createTransaction('name', 10000)
+        ->withUrls('not_a_url');
+
+    $transaction->validate();
+
+})->throws(ValidationException::class, 'return_url must be a URL');

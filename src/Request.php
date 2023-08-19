@@ -7,7 +7,7 @@ namespace TPG\PayFast;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use TPG\PayFast\Exceptions\PayFastException;
-use TPG\PayFast\Validation\Signature;
+use TPG\PayFast\Transaction\Signature;
 
 class Request
 {

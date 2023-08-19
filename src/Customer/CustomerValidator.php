@@ -4,32 +4,30 @@ declare(strict_types=1);
 
 namespace TPG\PayFast\Customer;
 
-use Valitron\Validator;
+use TPG\PayFast\Exceptions\ValidationException;
+use TPG\PayFast\Validation\Validator;
 
-class CustomerValidator
+class CustomerValidator extends Validator
 {
-    protected Validator $validator;
-
-    public function __construct(protected Customer $customer)
+    public function rules(): array
     {
-        $this->validator = new Validator($this->customer->toArray());
-        $this->validator->rules([
-            'required' => [
-                'name_first',
-                'name_last',
+        return [
+            'name_first' => [
+                'string',
+                'required',
             ],
-            'email' => [
-                'email_address',
+            'name_last' => [
+                'string',
+                'required',
             ],
-            'numeric' => [
-                'cell_number',
+            'email_address' => [
+                'string',
+                'email',
             ],
-        ]);
-    }
-
-    public function validate(): array|bool
-    {
-        $this->validator->validate();
-        return $this->validator->errors();
+            'cell_number' => [
+                'string',
+                'numeric',
+            ],
+        ];
     }
 }

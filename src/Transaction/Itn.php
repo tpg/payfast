@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Validation;
+namespace TPG\PayFast\Transaction;
 
 use GuzzleHttp\Client;
 use TPG\PayFast\Exceptions\ValidationException;
 use TPG\PayFast\Response\PayFastResponse;
 
-class ItnValidator
+class Itn
 {
     public readonly PayFastResponse $response;
 

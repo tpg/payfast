@@ -12,7 +12,7 @@ use TPG\PayFast\Merchant;
 use TPG\PayFast\Money;
 use TPG\PayFast\Transaction\Split;
 use TPG\PayFast\Subscription\Subscription;
-use TPG\PayFast\Validation\Signature;
+use TPG\PayFast\Transaction\Signature;
 
 class Transaction
 {
@@ -113,6 +113,11 @@ class Transaction
         $this->split = $split;
 
         return $this;
+    }
+
+    public function validate(): void
+    {
+        (new TransactionValidator)->validate($this->toArray());
     }
 
     public function toArray(): array
