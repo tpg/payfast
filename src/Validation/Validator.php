@@ -49,7 +49,7 @@ abstract class Validator
             $validation = $this->respect::key($key, new AllOf(...$prepared));
 
             if (in_array('nullable', $rules, true)) {
-                $validation = $this->respect::key($key, $this->respect::nullable(...$prepared));
+                $validation = $this->respect::key($key, $this->respect::nullable(new AllOf(...$prepared)));
             }
 
             return $validation;
