@@ -2,11 +2,18 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Validation;
+namespace TPG\PHPayfast\Validation;
 
 use Respect\Validation\Rules\AllOf;
+use Respect\Validation\Rules\Email;
+use Respect\Validation\Rules\Key;
+use Respect\Validation\Rules\NotEmpty;
+use Respect\Validation\Rules\Nullable;
+use Respect\Validation\Rules\NumericVal;
+use Respect\Validation\Rules\StringType;
+use Respect\Validation\Rules\Url;
 use Respect\Validation\Validator as BaseValidator;
-use TPG\PayFast\Exceptions\ValidationException;
+use TPG\PHPayfast\Exceptions\ValidationException;
 
 abstract class Validator
 {
@@ -24,36 +31,37 @@ abstract class Validator
      */
     public function validate(array $data): void
     {
-        $validator = new BaseValidator(...$this->getRules());
-
         try {
-            $validator->check($data);
+                $this->getRules()->check($data);
         } catch (\Respect\Validation\Exceptions\ValidationException $exception) {
             throw new ValidationException($exception->getMessage());
         }
     }
 
-    protected function getRules(): array
+    protected function getRules(): AllOf
     {
-        return collect($this->rules())->map(function ($rules, $key) {
+        $rules = collect($this->rules())->map(function ($rules, $key) {
 
             $prepared = collect(array_map(fn ($rule) => match ($rule) {
-                'required' => $this->respect::notEmpty(),
-                'string' => $this->respect::stringType(),
-                'email' => $this->respect::email(),
-                'numeric' => $this->respect::number(),
-                'url' => $this->respect::url(),
+                'required' => new NotEmpty(),
+                'string' => new StringType(),
+                'email' => new Email(),
+                'numeric' => new NumericVal(),
+                'url' => new Url(),
                 default => null,
             }, $rules))->whereNotNull()->toArray();
 
-            $validation = $this->respect::key($key, new AllOf(...$prepared));
+
+            $validation = new Key($key, new AllOf(...$prepared));
 
             if (in_array('nullable', $rules, true)) {
-                $validation = $this->respect::key($key, $this->respect::nullable(new AllOf(...$prepared)));
+                $validation = new Key($key, new Nullable(new AllOf(...$prepared)));
             }
 
             return $validation;
 
         })->toArray();
+
+        return new AllOf(...$rules);
     }
 }

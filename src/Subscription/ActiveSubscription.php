@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Subscription;
+namespace TPG\PHPayfast\Subscription;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
-use TPG\PayFast\Enums\SubscriptionStatus;
-use TPG\PayFast\Exceptions\PayFastException;
-use TPG\PayFast\Merchant;
-use TPG\PayFast\Request;
+use TPG\PHPayfast\Enums\SubscriptionStatus;
+use TPG\PHPayfast\Exceptions\PayFastException;
+use TPG\PHPayfast\Merchant;
+use TPG\PHPayfast\Request;
 
 class ActiveSubscription
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use TPG\PayFast\Merchant;
+use TPG\PHPayfast\Merchant;
 
 it('can create a new merchant object', function () {
 

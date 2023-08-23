@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Transaction;
+namespace TPG\PHPayfast\Transaction;
 
 use GuzzleHttp\Client;
-use TPG\PayFast\Exceptions\ValidationException;
-use TPG\PayFast\Response\PayFastResponse;
+use TPG\PHPayfast\Exceptions\ValidationException;
+use TPG\PHPayfast\Response\PayFastResponse;
 
 class Itn
 {

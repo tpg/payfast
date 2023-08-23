@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use TPG\PayFast\Customer\Customer;
-use TPG\PayFast\Exceptions\ValidationException;
+use TPG\PHPayfast\Customer\Customer;
+use TPG\PHPayfast\Exceptions\ValidationException;
 
 it('can create a new customer', function () {
     $customer = new Customer(

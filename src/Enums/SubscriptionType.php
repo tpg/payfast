@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Enums;
+namespace TPG\PHPayfast\Enums;
 
 enum SubscriptionType: int
 {

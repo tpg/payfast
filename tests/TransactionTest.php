@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use TPG\PayFast\Exceptions\ValidationException;
-use TPG\PayFast\Payfast;
-use TPG\PayFast\Transaction\Transaction;
+use TPG\PHPayfast\Exceptions\ValidationException;
+use TPG\PHPayfast\Payfast;
+use TPG\PHPayfast\Transaction\Transaction;
 
-$merchant = new \TPG\PayFast\Merchant('id', 'secret', 'passphrase');
+$merchant = new \TPG\PHPayfast\Merchant('id', 'secret', 'passphrase');
 
 it('can create a new transaction object', function () use ($merchant) {
 
@@ -60,11 +60,13 @@ it('can have return, cancel and notify urls', function () use ($merchant) {
 
 });
 
-it('will validator URLs', function () use ($merchant) {
+it('will validate URLs', function () use ($merchant) {
 
     $transaction = Payfast::merchant($merchant)
         ->createTransaction('name', 10000)
         ->withUrls('not_a_url');
+
+
 
     $transaction->validate();
 

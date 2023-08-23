@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PHPayfast;
 
-use TPG\PayFast\Transaction\Transaction;
-use TPG\PayFast\Transaction\Itn;
+use TPG\PHPayfast\Transaction\Transaction;
+use TPG\PHPayfast\Transaction\Itn;
 
 readonly class Payfast
 {

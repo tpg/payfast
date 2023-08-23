@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Transaction;
+namespace TPG\PHPayfast\Transaction;
 
-use TPG\PayFast\Attributes;
-use TPG\PayFast\Customer\Customer;
-use TPG\PayFast\Enums\PaymentMethod;
-use TPG\PayFast\Transaction\FormBuilder;
-use TPG\PayFast\Merchant;
-use TPG\PayFast\Money;
-use TPG\PayFast\Transaction\Split;
-use TPG\PayFast\Subscription\Subscription;
-use TPG\PayFast\Transaction\Signature;
+use TPG\PHPayfast\Attributes;
+use TPG\PHPayfast\Customer\Customer;
+use TPG\PHPayfast\Enums\PaymentMethod;
+use TPG\PHPayfast\Transaction\FormBuilder;
+use TPG\PHPayfast\Merchant;
+use TPG\PHPayfast\Money;
+use TPG\PHPayfast\Transaction\Split;
+use TPG\PHPayfast\Subscription\Subscription;
+use TPG\PHPayfast\Transaction\Signature;
 
 class Transaction
 {
@@ -117,6 +117,7 @@ class Transaction
 
     public function validate(): void
     {
+        $validator = new TransactionValidator();
         (new TransactionValidator)->validate($this->toArray());
     }
 

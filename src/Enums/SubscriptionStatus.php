@@ -1,6 +1,6 @@
 <?php
 
-namespace TPG\PayFast\Enums;
+namespace TPG\PHPayfast\Enums;
 
 enum SubscriptionStatus: int
 {

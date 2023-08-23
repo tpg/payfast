@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast;
+namespace TPG\PHPayfast;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use TPG\PayFast\Exceptions\PayFastException;
-use TPG\PayFast\Transaction\Signature;
+use TPG\PHPayfast\Exceptions\PayFastException;
+use TPG\PHPayfast\Transaction\Signature;
 
 class Request
 {
@@ -74,12 +74,12 @@ class Request
     protected function headers(array $body = []): array
     {
         $headers = [
-            'merchant-id' => $this->merchant->merchantId,
+            'merchant-id' => $this->merchant->id,
             'version' => 'v1',
             'timestamp' => (new \DateTime())->format(DATE_ATOM),
         ];
 
-        $headers['signature'] = (new Signature(array_merge($headers, $body), $this->merchant->passphrase()))->generate(true);
+        $headers['signature'] = (new Signature(array_merge($headers, $body), $this->merchant->passphrase))->generate(true);
 
         return $headers;
     }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Response;
+namespace TPG\PHPayfast\Response;
 
 use DateTime;
 use Illuminate\Support\Arr;
-use TPG\PayFast\Customer\Customer;
-use TPG\PayFast\Enums\PaymentStatus;
-use TPG\PayFast\Money;
+use TPG\PHPayfast\Customer\Customer;
+use TPG\PHPayfast\Enums\PaymentStatus;
+use TPG\PHPayfast\Money;
 
 readonly class PayFastResponse
 {

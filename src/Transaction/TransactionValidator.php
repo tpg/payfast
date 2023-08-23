@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Transaction;
+namespace TPG\PHPayfast\Transaction;
 
-use TPG\PayFast\Validation\Validator;
+use TPG\PHPayfast\Validation\Validator;
 
 class TransactionValidator extends Validator
 {

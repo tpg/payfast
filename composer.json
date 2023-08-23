@@ -26,12 +26,12 @@
     },
     "autoload": {
         "psr-4": {
-            "TPG\\PayFast\\": "src/"
+            "TPG\\PHPayfast\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TPG\\PayFast\\Tests\\": "tests/"
+            "TPG\\PHPayfast\\Tests\\": "tests/"
         }
     },
     "extra": {

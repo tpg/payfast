@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Customer;
+namespace TPG\PHPayfast\Customer;
 
-use TPG\PayFast\Exceptions\ValidationException;
-use TPG\PayFast\Validation\Validator;
+use TPG\PHPayfast\Exceptions\ValidationException;
+use TPG\PHPayfast\Validation\Validator;
 
 class CustomerValidator extends Validator
 {

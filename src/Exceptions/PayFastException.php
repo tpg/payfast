@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TPG\PayFast\Exceptions;
+namespace TPG\PHPayfast\Exceptions;
 
 class PayFastException extends \Exception
 {
