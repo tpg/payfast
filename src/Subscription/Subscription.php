@@ -16,9 +16,7 @@ readonly class Subscription
         public SubscriptionFrequency $frequency = SubscriptionFrequency::Monthly,
         public int $cycles = 0,
         public ?\DateTime $billingDate = null,
-        public ?int $recurringAmount = null,
-        public ?bool $notifyEmail = null,
-        public ?bool $notifyWebhook = null,
+        public ?int $amount = null,
         public ?bool $notifyBuyer = null,
     ) {
     }
@@ -28,8 +26,8 @@ readonly class Subscription
         return (new Attributes())->prep([
             'subscription_type' => $this->type,
             'billing_date' => $this->billingDate->format('Y-m-d'),
-            'recurring_amount' => $this->recurringAmount
-                ? (new Money($this->recurringAmount))->format()
+            'recurring_amount' => $this->amount
+                ? (new Money($this->amount))->format()
                 : null,
             'frequency' => $this->frequency,
             'cycles' => $this->cycles,

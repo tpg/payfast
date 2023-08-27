@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace TPG\PHPayfast\Customer;
 
 use TPG\PHPayfast\Attributes;
-use TPG\PHPayfast\Exceptions\ValidationException;
+use TPG\PHPayfast\Validator;
+use TPG\Yerp\Rules;
 
 readonly class Customer
 {
     public function __construct(
+        #[Rules\Required(failure: 'The first name is required.')]
         public ?string $firstName = null,
         public ?string $lastName = null,
+        #[Rules\Email(failure: 'The email address is invalid.')]
         public ?string $email = null,
         public ?string $cell = null
     ) {
@@ -20,7 +23,7 @@ readonly class Customer
 
     protected function validate(): void
     {
-        (new CustomerValidator)->validate($this->toArray());
+        Validator::validate($this);
     }
 
     public function toArray(): array

@@ -14,6 +14,8 @@ use TPG\PHPayfast\Transaction\Split;
 use TPG\PHPayfast\Subscription\Subscription;
 use TPG\PHPayfast\Transaction\Signature;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class Transaction
 {
     public ?Customer $customer = null;
@@ -108,17 +110,23 @@ class Transaction
         return $this;
     }
 
-    public function splitWith(Split $split): self
+    public function splitWith(Split|string $splitWith, float $amount, int $min = null, int $max = null): self
     {
-        $this->split = $split;
+        $this->split = $splitWith instanceof Split
+            ? $splitWith
+            : new Split(
+                merchantId: $splitWith,
+                percentage: $amount < 0 ? $amount : null,
+                amount: $amount > 0 ? $amount : null,
+                min: $min,
+                max: $max
+            );
 
         return $this;
     }
 
     public function validate(): void
     {
-        $validator = new TransactionValidator();
-        (new TransactionValidator)->validate($this->toArray());
     }
 
     public function toArray(): array

@@ -21,4 +21,4 @@ it('will validate customer data', function () {
 
     $customer = new Customer('first', 'last', 'bad-email');
 
-})->throws(ValidationException::class, 'must be valid email');
+})->throws(ValidationException::class);
