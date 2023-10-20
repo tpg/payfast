@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace TPG\PHPayfast\Transaction;
 
+use Illuminate\Support\Facades\Http;
 use TPG\PHPayfast\Attributes;
 use TPG\PHPayfast\Customer\Customer;
 use TPG\PHPayfast\Enums\PaymentMethod;
+use TPG\PHPayfast\Enums\SubscriptionFrequency;
+use TPG\PHPayfast\Enums\SubscriptionType;
 use TPG\PHPayfast\Transaction\FormBuilder;
 use TPG\PHPayfast\Merchant;
 use TPG\PHPayfast\Money;
@@ -96,9 +99,30 @@ class Transaction
         return $this;
     }
 
-    public function subscription(Subscription $subscription): self
+    public function subscription(
+        SubscriptionFrequency $frequency = SubscriptionFrequency::Monthly,
+        int $cycles = 0,
+        int $amount = null,
+        \DateTime $billingDate = null,
+        bool $notifyBuyer = null
+    ): self {
+        $this->subscription = new Subscription(
+            type: SubscriptionType::Subscription,
+            frequency: $frequency,
+            cycles: $cycles,
+            billingDate: $billingDate,
+            amount: $amount,
+            notifyBuyer: $notifyBuyer
+        );
+
+        return $this;
+    }
+
+    public function tokenize(): self
     {
-        $this->subscription = $subscription;
+        $this->subscription = new Subscription(
+            type: SubscriptionType::Tokenization,
+        );
 
         return $this;
     }
@@ -167,13 +191,41 @@ class Transaction
         ))->build();
     }
 
-    protected function getHost(): string
+    public function onsite(): string
     {
-        return implode('', [
+        $signature = (new Signature(
+            $this->toArray(),
+            $this->merchant->passphrase)
+        )->generate();
+
+        $response = Http::asJson()->acceptJson()->post($this->getHost(onsite: true), [
+            'signature' => $signature,
+            ...$this->toArray(),
+        ]);
+
+        if (! $response->successful()) {
+            ray($response->body());
+            throw new \Exception($response->body(), $response->status());
+        }
+
+        return $response->json('uuid');
+    }
+
+    protected function getHost(bool $onsite = false): string
+    {
+        $domain = implode('', [
             'https://',
             $this->merchant->testing ? 'sandbox.' : 'www.',
-            'payfast.co.za/eng/process',
+            'payfast.co.za',
         ]);
+
+        $uri = '/eng/process';
+
+        if ($onsite) {
+            $uri = '/onsite/process';
+        }
+
+        return $domain.$uri;
     }
 
     protected function customAttributes(array $custom, string $keyPrefix): array

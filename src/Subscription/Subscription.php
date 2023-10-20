@@ -24,13 +24,15 @@ readonly class Subscription
     public function toArray(): array
     {
         return (new Attributes())->prep([
-            'subscription_type' => $this->type,
-            'billing_date' => $this->billingDate->format('Y-m-d'),
-            'recurring_amount' => $this->amount
-                ? (new Money($this->amount))->format()
-                : null,
-            'frequency' => $this->frequency,
-            'cycles' => $this->cycles,
+            'subscription_type' => $this->type->value,
+            ...$this->type === SubscriptionType::Subscription ? [
+                'billing_date' => $this->billingDate?->format('Y-m-d'),
+                'recurring_amount' => $this->amount
+                    ? (new Money($this->amount))->format()
+                    : null,
+                'frequency' => $this->frequency->value,
+                'cycles' => $this->cycles,
+            ] : [],
         ]);
     }
 }
