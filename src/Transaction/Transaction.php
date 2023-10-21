@@ -7,6 +7,7 @@ namespace TPG\PHPayfast\Transaction;
 use Illuminate\Support\Facades\Http;
 use TPG\PHPayfast\Attributes;
 use TPG\PHPayfast\Customer\Customer;
+use TPG\PHPayfast\Enums\PayfastEndpoint;
 use TPG\PHPayfast\Enums\PaymentMethod;
 use TPG\PHPayfast\Enums\SubscriptionFrequency;
 use TPG\PHPayfast\Enums\SubscriptionType;
@@ -16,8 +17,6 @@ use TPG\PHPayfast\Money;
 use TPG\PHPayfast\Transaction\Split;
 use TPG\PHPayfast\Subscription\Subscription;
 use TPG\PHPayfast\Transaction\Signature;
-
-use Symfony\Component\Validator\Constraints as Assert;
 
 class Transaction
 {
@@ -213,19 +212,7 @@ class Transaction
 
     protected function getHost(bool $onsite = false): string
     {
-        $domain = implode('', [
-            'https://',
-            $this->merchant->testing ? 'sandbox.' : 'www.',
-            'payfast.co.za',
-        ]);
-
-        $uri = '/eng/process';
-
-        if ($onsite) {
-            $uri = '/onsite/process';
-        }
-
-        return $domain.$uri;
+        return ($onsite ? PayfastEndpoint::Onsite : PayfastEndpoint::Process)->url($this->merchant->testing);
     }
 
     protected function customAttributes(array $custom, string $keyPrefix): array
