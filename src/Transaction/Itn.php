@@ -14,7 +14,11 @@ class Itn
 
     protected ?string $error = null;
 
-    public readonly ?bool $success;
+    public bool $success = false;
+    public bool $hasValidSignature = false;
+    public bool $hasValidHost = false;
+    public bool $hasValidAmount = false;
+    public bool $isConfirmed = false;
 
     public function __construct(public readonly array $data, protected bool $testing = false)
     {
@@ -73,6 +77,7 @@ class Itn
             return false;
         }
 
+        $this->hasValidSignature = true;
         return true;
     }
 
@@ -87,6 +92,7 @@ class Itn
             return false;
         }
 
+        $this->hasValidHost = true;
         return true;
     }
 
@@ -121,6 +127,7 @@ class Itn
             return false;
         }
 
+        $this->hasValidAmount = true;
         return true;
     }
 
@@ -149,6 +156,7 @@ class Itn
             return false;
         }
 
+        $this->isConfirmed = true;
         return true;
     }
 

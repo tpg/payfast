@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TPG\PHPayfast\Transaction;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use TPG\PHPayfast\Attributes;
 use TPG\PHPayfast\Customer\Customer;
@@ -203,11 +204,55 @@ class Transaction
         ]);
 
         if (! $response->successful()) {
-            ray($response->body());
             throw new \Exception($response->body(), $response->status());
         }
 
         return $response->json('uuid');
+    }
+
+    public function charge(string $token)
+    {
+        $headers = [
+            'merchant-id' => $this->merchant->id,
+            'version' => 'v1',
+            'timestamp' => now()->toIso8601String(),
+        ];
+
+        $body = Arr::only($this->toArray(), [
+            'amount',
+            'item_name',
+            'item_description',
+            'm_payment_id',
+            'setup',
+        ]);
+
+        $signature = (new Signature([
+            ...$headers,
+            ...$body,
+        ], $this->merchant->passphrase))->generate();
+
+        $url = 'https://api.payfast.co.za/subscriptions/'.$token.'/adhoc';
+
+        if ($this->merchant->testing) {
+            $url .= '?testing=true';
+        }
+
+        $response = Http::asJson()->acceptJson()->withHeaders([
+            'merchant-id' => $this->merchant->id,
+            'version' => 'v1',
+            'timestamp' => now()->toIso8601String(),
+            'signature' => $signature,
+        ])->post($url, [
+            Arr::only($this->toArray(), [
+                'amount',
+                'item_name',
+                'item_description',
+                'm_payment_id',
+                'setup',
+            ]),
+        ]);
+
+        dd($response->json());
     }
 
     protected function getHost(bool $onsite = false): string
