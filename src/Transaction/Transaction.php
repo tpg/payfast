@@ -12,12 +12,9 @@ use TPG\PHPayfast\Enums\PayfastEndpoint;
 use TPG\PHPayfast\Enums\PaymentMethod;
 use TPG\PHPayfast\Enums\SubscriptionFrequency;
 use TPG\PHPayfast\Enums\SubscriptionType;
-use TPG\PHPayfast\Transaction\FormBuilder;
 use TPG\PHPayfast\Merchant;
 use TPG\PHPayfast\Money;
-use TPG\PHPayfast\Transaction\Split;
 use TPG\PHPayfast\Subscription\Subscription;
-use TPG\PHPayfast\Transaction\Signature;
 
 class Transaction
 {
