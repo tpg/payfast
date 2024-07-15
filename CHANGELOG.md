@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.0 - 2024-07-15
+
+Really just a few dependency updates. Nothing else.
+
 ## v0.4.0 - 2023-04-12
 
 PayFast frustrates me somewhat. Anyway...
