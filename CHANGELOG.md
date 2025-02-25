@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.0 - 2025-02-25
+
+Laravel 12 support.
+
 ## v0.5.0 - 2024-07-15
 
 Really just a few dependency updates. Nothing else.
