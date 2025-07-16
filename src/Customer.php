@@ -11,7 +11,7 @@ class Customer
     protected ?string $email = null;
     protected ?string $cellNumber = null;
 
-    public function setName(?string $first = null, string $last = null): self
+    public function setName(?string $first = null, ?string $last = null): self
     {
         $this->firstName = $first;
         $this->lastName = $last;

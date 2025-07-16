@@ -27,7 +27,7 @@ class Merchant
         $this->passphrase = $passphrase;
     }
 
-    public function ping(bool $testing = false, Client $client = null): bool
+    public function ping(bool $testing = false, ?Client $client = null): bool
     {
 
         try {

@@ -25,7 +25,7 @@ class Subscription
     protected ?bool $paused = null;
     protected ?bool $cancelled = null;
 
-    public function __construct(Merchant $merchant, string $token, Client $client = null)
+    public function __construct(Merchant $merchant, string $token, ?Client $client = null)
     {
         $this->merchant = $merchant;
         $this->token = $token;
@@ -108,7 +108,7 @@ class Subscription
         }
     }
 
-    protected function request(string $method, string $uri = null, array $body = []): array
+    protected function request(string $method, ?string $uri = null, array $body = []): array
     {
         try {
 
