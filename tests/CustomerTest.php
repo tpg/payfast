@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace TPG\PayFast\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TPG\PayFast\Customer;
 
 class CustomerTest extends TestCase
 {
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_create_a_new_customer(): void
     {
         $customer = (new Customer())

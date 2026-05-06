@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TPG\PayFast\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TPG\PayFast\Customer;
 use TPG\PayFast\FormBuilder;
 use TPG\PayFast\Merchant;
@@ -13,9 +14,7 @@ use TPG\PayFast\Transaction;
 
 class FormBuilderTest extends TestCase
 {
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_build_a_form(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'passphrase');

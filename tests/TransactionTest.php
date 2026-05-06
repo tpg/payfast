@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TPG\PayFast\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TPG\PayFast\Customer;
 use TPG\PayFast\Merchant;
 use TPG\PayFast\PayFast;
@@ -12,9 +13,7 @@ use TPG\PayFast\Transaction;
 
 class TransactionTest extends TestCase
 {
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_create_a_new_transaction_instance(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'passphrase');
@@ -30,9 +29,7 @@ class TransactionTest extends TestCase
         ), $transaction->attributes());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_have_a_customer(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'passphrase');
@@ -47,9 +44,7 @@ class TransactionTest extends TestCase
         self::assertArrayNotHasKey('email_address', $transaction->attributes());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_have_a_payment_id(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'passphrase');
@@ -60,9 +55,7 @@ class TransactionTest extends TestCase
         self::assertEquals('PID1', $transaction->attributes()['m_payment_id']);
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_have_custom_attributes(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'passphrase');
@@ -86,9 +79,7 @@ class TransactionTest extends TestCase
         self::assertArrayHasKey('custom_str5', $transaction->attributes());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function ensure_attribute_order(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'passphrase');

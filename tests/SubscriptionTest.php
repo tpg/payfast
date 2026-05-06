@@ -7,6 +7,7 @@ namespace TPG\PayFast\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\Test;
 use TPG\PayFast\Customer;
 use TPG\PayFast\Merchant;
 use TPG\PayFast\PaymentMethod;
@@ -15,9 +16,7 @@ use TPG\PayFast\Transaction;
 
 class SubscriptionTest extends TestCase
 {
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_create_a_new_subscription_transaction(): void
     {
         $merchant = new Merchant('ID', 'KEY', 'PASSPHRASE');
@@ -39,9 +38,7 @@ class SubscriptionTest extends TestCase
         ), $transaction->attributes());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_fetch_a_subscription_object(): void
     {
         $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
@@ -80,9 +77,7 @@ class SubscriptionTest extends TestCase
         self::assertSame(1, $subscription->cyclesComplete());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_pause_a_subscription(): void
     {
         $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
@@ -110,9 +105,7 @@ class SubscriptionTest extends TestCase
         self::assertTrue($subscription->paused());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_unpause_a_subscription(): void
     {
         $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
@@ -140,9 +133,7 @@ class SubscriptionTest extends TestCase
         self::assertFalse($subscription->paused());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_cancel_a_subscription(): void
     {
         $token = '5de7ed4c-0326-d453-f812-f338a40846f1';
@@ -170,9 +161,7 @@ class SubscriptionTest extends TestCase
         self::assertTrue($subscription->cancelled());
     }
 
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_update_a_subscription()
     {
         $token = '5de7ed4c-0326-d453-f812-f338a40846f1';

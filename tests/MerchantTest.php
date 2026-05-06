@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace TPG\PayFast\Tests;
 
+use PHPUnit\Framework\Attributes\Test;
 use TPG\PayFast\Merchant;
 use TPG\PayFast\PayFast;
 use TPG\PayFast\Transaction;
 
 class MerchantTest extends TestCase
 {
-    /**
-     * @test
-     **/
+    #[Test]
     public function it_can_create_a_new_merchant(): void
     {
         $merchant = new Merchant('MERCHANT_ID', 'MERCHANT_KEY', 'passphrase');
