@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.7.0 - 2026-05-06
+
+Support for Laravel 13.
+Removed support for PHP < 8.4
+
 ## v0.6.1 - 2025-07-16
 
 A few updates to remove standarize the nullability across a number of methods. Deprecated in PHP 8.4.
